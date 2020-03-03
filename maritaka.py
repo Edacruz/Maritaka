@@ -5,8 +5,7 @@ import asyncio
 import random
 
 client = discord.Client()
-token = 'NjYwMzUzMjczNjU5OTE2Mjk5.XgbtCw.eYuTEZUxw4KJjJBW_AN_izx1WNY'
-
+token = 'Discord tolken
 #imprimindo status
 @client.event
 async def on_ready():
