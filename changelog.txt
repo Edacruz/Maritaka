@@ -1,0 +1,14 @@
+# Maritaka bot versão 0.2
+1. adicionda funcão de spam
+
+#Maritaka bot versão 0.3
+1. adicionado a função de jackpot
+2. algumas correçõs de português
+
+#Maritaka bot versão 0.3.1
+1. Corrigido problema com comentário de multiplas linhas.
+2. Agora quando você perde no jackpot aparece a frase: "perdeu, otário!"
+3. O comando "?maritaka" não aparece mais na frase digitada.
+4. Agora se você marcar o bot ela responderá com uma frase aleatória.
+5. Adicionado formatação ao comando '?comandos'
+6. Outros pequenos polimentos.
