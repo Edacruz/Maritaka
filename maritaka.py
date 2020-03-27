@@ -1,177 +1,208 @@
 # -*- coding: UTF-8 -*- 
-# Maritaka bot versão 0.3
+# Maritaka bot versão 1.0
 import discord
 import asyncio
 import random
+from discord.ext import commands
 
-versao = '0.4'
-build = 'HE 12020/03/07'
-client = discord.Client()
+prefixo = "*"
+versao = 'beta 1.0'
+build = 'HE 12020/03/26'
+client = commands.Bot(command_prefix=prefixo)
 token = 'dicord_token'
 
-#imprimindo status
-@client.event
-async def on_ready():
-        print('Bot online!')
-        print(client.user.name,'está online!')
-        print(client.user)
-        print(client.user.id)
-
+#imprimindo status do bot
+cstatus = ['Olá, Marilene.','Fazendo chá.','Ara :3','Marbas-sama','owo','Agora com mais códigos inúteis.']
+bstatus = random.choice(cstatus)
 #=-=-==-=-= eventos de mensagem =-=-==-=-=
 @client.event
-async def on_message(message):
-    if message.content.startswith('?oi') and message.author != client.user:
-        channel = message.channel
-        await client.send_message(message.channel,'Saudações, <@{}>'.format(message.author.id))
-    if message.content.startswith('?irineu') and message.author != client.user:
-        channel = message.channel
-        nome = [message.author]
-        await client.send_message(message.channel,'{}, não sabe nem eu\n{}'.format(message.author,nome))
+async def on_ready():
+        print('=-'*10,'.:ONLINE:.','-='*10)
+        print(client.user.name,'está online!')
+        print('Cliente user: ',client.user)
+        print('Cliente user id: ',client.user.id)
+        print('=-'*10,'xxFIMxxx','-='*10)
+        #setando o status online do bot. online = online; não perturbe = dnd; ausente = idle;
+        await client.change_presence(status=discord.Status.dnd, activity=discord.Game(bstatus))
 
 
-    if message.content.startswith('?sobre') and message.author != client.user:
-        channel = message.channel
-        await client.send_message(message.channel,'Bot criando por: Marbas Lag da Silva Stark, she was born in HE12019/12/28, at 14:09.\nDigite **?comandos** para ver todos os comados.\n*versão do bot: {}\nversão do Python: 3.5.1*\nBuild date: **{}** '.format(versao,build))
+#=-=-==-=-=*** Main Commands ***=-=-==-=-=
+@client.command(name='oi', help='Faz a Maritaka te dar oi.')
+async def oi(ctx):
+    saldacoes = ['Saudações','Olá','Salve','Eae','Coé','Fala!','Sup']
+    await ctx.send(f'{random.choice(saldacoes)}, <@{ctx.author.id}>')
+
+@client.command(name='dado', help='Lança um dado.')
+async def dado(ctx, lados: int = 6, qt_dados: int = 1):
+    dado = [
+        str(random.choice(range(1, lados + 1)))
+        for _ in range(qt_dados)
+    ]
+    await ctx.send(', '.join(dado))
+
+@client.command(name='irineu', help='Você não sabe nem eu.')
+async def irineu(ctx):
+    await ctx.send(f'<@{ctx.author.id}>, não sabe nem eu.')
+
+@client.command(name='sobre', help='Sobre o bot.')
+async def sobre(ctx):
+    await ctx.send(f'Bot criando por: **Marbas Lag da Silva Stark**, she was born in **HE12019/12/28**, at 14:09.\nDigite **{prefixo}help** para ver todos os comados.\n*versão do bot: {versao}\nversão do Python: 3.6.9*\n*Build date:* **{build}** ')
+
+#deuses
+@client.command(name='gi', help='Mostra a descrição de todos os deuses.\nChauri, Gabriel, Marbas, Sub, Tainaka.')
+async def gi(ctx, deus="all"):
+    if deus.lower() == 'marbas':
+        await ctx.send('Lorde Marbas é o meu criador, ele gosta de vacas \'-\'')
+    elif deus.lower() == 'chauri':
+        await ctx.send('Deusa da beleza e da fofura, é também esposa do lorde Marbas.')
+    elif deus.lower() == 'tainaka' or deus == 'tainara':
+        await ctx.send('Tainaka é a deusa dos alfaces 🤔')
+    elif deus.lower() == 'sub':
+        await ctx.send('Sub é o deus do trabalho voluntário.')
+    elif deus.lower() == 'gabriel':
+        await ctx.send('É o deus ou deusa das traps, é também o rei dos disfarces 👌')
+    else:
+        await ctx.send(f'Sintaxe incorrecta! digite: `{prefixo}gi <deus>`')
+
+#=-=-=-=-=-=-=-=xxx Fim da descrição dos deuses xxx=-=-=-=-=-=-=-=
+
+#comando que repeti a mensagem enviada
+@client.command(name='maritaka', help='Repete a sua mensagem.')
+async def say(ctx):
+    msg = ctx.message.content
+    canal = ctx.message.channel
+    messages = []
+    async for message in canal.history(limit = 1):
+        messages.append(message)
+    await canal.delete_messages(messages)
+    await ctx.send(msg[9:])
 
 
-    if message.content.startswith('hey, maritaka quem é a melhor waifu?') and message.author != client.user:
-        channel = message.channel
-        await client.send_message(message.channel,'Essa deve ser eu kiki :blush:')
+#faz o bot contar até o numero estipulado.
+@client.command(name='flood', help='Faz um flood maneiro.', aliases=['spam','cebola'])
+async def flood(ctx, maximo: int):
+    spam = 0
+    if maximo > 100:
+        await ctx.send('Limite excedido, digite um valor menor que 100.')
+        maximo = 0     
+    while maximo > 0 and maximo >= spam:
+            await ctx.send(spam)
+            spam += 1  
 
+#joguinho de jackpot, que gera 3 números aleatórios
+@client.command(name='jackpot', help='Sorteia 3 números.', aliases=['jp'])
+async def jackpot(ctx):
+    sorteio = (random.randint(0,9),random.randint(0,9),random.randint(0,9))#tupla que recebe os números sorteados
+    #testanto se todos os números são iguais
+    if sorteio[0] == sorteio[1] and sorteio[2] == sorteio[0] and sorteio[1] != 6:
+        await ctx.send(f'{sorteio}\nJackpot! 🎉\nVocê venceu!, <@{ctx.author.id}>')
+    elif sorteio[0] == 6 and sorteio[1] == sorteio[2] and sorteio[0] == sorteio[1]:
+        await ctx.send(f'{sorteio}\nJackpot! 🎉\nSatanic win! 🤘️, <@{ctx.author.id}>')
+    else:
+        await ctx.send(f'{sorteio}\n<@{ctx.author.id}>, Você perdeu 😭 ') 
 
-    if 'melhor waifu' in message.content.lower():
-        await client.send_message(message.channel,'Essa deve ser eu')
-
-
-    if message.content.startswith('?marbas') and message.author != client.user:
-        channel = message.channel
-        await client.send_message(message.channel,'Lorde Marbas é o meu criador, ele gosta de vacas \'-\'')
-
-
-    if message.content.startswith('?sub') and message.author != client.user:
-        channel = message.channel
-        await client.send_message(message.channel,'O Sub não é um escravo, só ganha mal')
-
-
-    if message.content.startswith('?tainaka') and message.author != client.user:
-        channel = message.channel
-        await client.send_message(message.channel,'A Tainaka gosta de alface :thinking:')
-
-
-    if message.content.startswith('?chauri') and message.author != client.user:
-        channel = message.channel
-        await client.send_message(message.channel,'É a webesposa do lorde Marbas, e é também uma deusa.')
-
-
-    if message.content.startswith('?maritaka') and message.author != client.user:
-        msg = message.content
-        if len(msg) <= 9:
-            await client.send_message(message.channel,'Digite algo!\nSintax: `?maritaka <mensagem>`')
-        else:
-            channel = message.channel
-            await client.send_message(message.channel,msg[9:])
-    
-    #se o bot for marcado
-    if '660353273659916299' in message.content and message.author != client.user:
-        frases = ['Oi','Sup!','Eae','Chamou, sir?','Ao seu dispor','Sim, esta sou eu','Ay ay, sir!','Tô a fazer chá','Estou a apreciar a beleza do lorde marbas, não enche!','dormindo :sleeping:']
-        await client.send_message(message.channel,random.choice(frases))
-
-#=-=-==-=-= fim dos eventos de mensagem =-=-==-=-=
-
-#flood
-    if message.content.startswith('?flood'):
-        msg = message.content
-        if len(msg) < 8:
-            await client.send_message(message.channel,'Digite um valor válido!\nSintax: `?flood <limite>`')
-        elif message.author.id == "user_id":#nega a permissão para um usuário
-            maximo = 0
-            await client.send_message(message.channel,'Você não tem permissão pra usar este comando!')
-        elif int(msg[7:]) > 50:
-            await client.send_message(message.channel,'Limite excedido, digite um valor menor que 50')
-            maximo = 0    
-        else:
-            maximo = int(msg[7:])  
-        spam = 0
-        while spam < maximo:
-            spam += 1
-            msg = message.content
-            channel = message.channel
-            if maximo > 0:
-                await client.send_message(message.channel, spam)
-                
-#fim da tag de flood
-
-
-#=-=-=-=-= código dos joguinhos =-=-=-=-=
-
-
-#=-=-=-=-= codigo do jackpot =-=-=-=-=
-    if message.content.startswith('?jackpot') and message.author != client.user:
-        
-        #Sorteando numeros:
-        sorteio = (random.randint(0,9),random.randint(0,9),random.randint(0,9))
-
-        channel = message.channel
-
-        #testanto se todos os números são iguais
-        if sorteio[0] == sorteio[1] and sorteio[2] == sorteio[0]:
-            await client.send_message(message.channel,'{}\nJackpot! 🎉'.format(sorteio))
-        #se eu perder não serei chamado de otário kkkk
-        elif sorteio[0] != sorteio[1] and message.author.id == "122727645132750848" or sorteio[2] != sorteio[0] and message.author.id == "122727645132750848":
-            await client.send_message(message.channel,'{}\nTu perdeste, lindo :sob:'.format(sorteio))
-        else:
-            await client.send_message(message.channel,'{}\nPerdeu, otário! <@{}>'.format(sorteio,message.author.id)) 
-#=-=-=-=-= fim do codigo do jackpot =-=-=-=-=
-
-#=-=-=-=-= joguinho de adivinhar número (a ser implementado) =-=-=-=-=
-    if message.content.startswith('?joguin') and message.author != client.user:
-        msg = message.content
-        if len(msg) <= 7:
-            await client.send_message(message.channel,('Digite algo!\nSintax: `?joguin <numero entre 0 e 9>`'))
-        else:
-            #fatiando a string para pegar apenas o número 
-            sua_escolha = msg[8:]
-            await client.send_message(message.channel,'Você escolheu: **{}**'.format(sua_escolha))
-            numero = ['0','1','2','3','4','5','6','7','8','9']
-            sekai = random.choice(numero)
-            if sua_escolha == sekai:
-                await client.send_message(message.channel,'Você ganhou :partying_face:')
-            elif sua_escolha not in ['0','1','2','3','4','5','6','7','8','9']:
-                await client.send_message(message.channel,'Digite um número entre 0 e 9 :expressionless:')
-            else:
-                await client.send_message(message.channel,'\nResposta certa: **{}**\nVocê perdeu :sob: '.format(sekai))
-#
-#
-#=-=-=-=-= fim joguinho de adivinhar número =-=-=-=-=
-
-#-=-=-=-= Jogo de cara ou coroa -=-=-=-=-=-=-=-=
-    if message.content.startswith('?moeda'):
-        msg = message.content
+@client.command(name='moeda', help='Lança uma moeda para tirar cara ou coroa.', aliases=['coin'])
+async def moeda(ctx):
         moeda = random.randint(0,1)
         if moeda == 1:
-            await client.send_message(message.channel,"Cara :wink:")
+            await ctx.send("Cara 😉")
         else:
-            await client.send_message(message.channel,"Coroa :crown:") 
-#=-=-=-=-=-= fim dos joguinhos -=-=-=-=-=-=-=-=-=-=
-                
-#mostra todos os comandos: 
-    if message.content.startswith('?comandos'):
-        msg = message.content
-        channel = message.channel
-        await client.send_message(message.channel,'```?marbas\n?tainaka\n?sub\n?maritaka\n?oi\n?chauri\n?flood\n?jackpot\n?joguin\n?moeda```\n*Digite `?info <comando>` para ter detalhes.*')
+            await ctx.send("Coroa 👑")
 
-#comandos de descrição:
-#    if message.content.startswith('?info joguin'):
-#        channel = message.channel
-#        await client.send_message(message.channel,'Joguinho de adivinhar um número.\nsintax: `joguin <numero entre 0 e 9>`')
+@client.command(name='joguinho', help='Joguinho de advinhar o número.', aliases=['joguin'])
+async def joguin(ctx, sua_escolha: int):
+    numero = [0,1,2,3,4,5,6,7,8,9]
+    sekai = random.choice(numero)
+    if sua_escolha == sekai:
+        await ctx.send(f'Você escolheu: **{sua_escolha}**\n<@{ctx.author.id}>, você ganhou :partying_face:')
+    elif sua_escolha not in numero:
+        await ctx.send('Digite um número entre 0 e 9 😐️')
+    else:
+        await ctx.send(f'<@{ctx.author.id}>, você perdeu 😭 \nVocê escolheu: **{sua_escolha}**\nResposta certa: **{sekai}**')
+
+@client.command(name='versao', help='Mostra a versão do bot.', aliases=['v','ver'])
+async def v(ctx):
+    await ctx.send(f'*Maritaka versão: {versao}*')
+
+@client.command(name='convite', help='Link para convidar o bot.', aliases=['convidar','invite'])
+async def convite(ctx):
+    await ctx.send('https://discordapp.com/oauth2/authorize?client_id=660353273659916299&permissions=537159744&scope=bot')
+
+@client.command(pass_context=True, name='limpar', help='apaga uma dada quantidade de mensagens.', aliases=['clean','apagar','clear','apage','deletar','delete','del'])
+@commands.has_permissions(manage_messages=True)
+async def limpar(ctx, amount=1):
+    if amount == 100:
+        amount = 99
+    if amount > 100: 
+        return await ctx.send('Limite excedido, eu posso apenas limpar 100 mensagens por vez.')
+    else:    
+        canal = ctx.message.channel
+        messages = []
+        async for message in canal.history(limit = amount + 1):
+            messages.append(message)
+        await canal.delete_messages(messages)
+    
+        if amount > 1: 
+            await ctx.send(f'{amount} mensagens deletadas por <@{ctx.message.author.id}>')     
+        else:
+            await ctx.send(f'{amount} mensagem deletada por <@{ctx.message.author.id}>')
+
+@client.command(name='esbofetear', help='esbofeteia alguém.', aliases=['tapa','slap'])
+async def tapa(ctx, usuario):
+    if usuario == '<@122727645132750848>':
+        await ctx.send(f'Você não pode bater no meu mestre')
+    else:
+        await ctx.send(f'<@{ctx.author.id}> deu uma bifa em {usuario}')
 
 
-#versão
-    if message.content.startswith('?v'):
-        msg = message.content
-        channel = message.channel
-        await client.send_message(message.channel,'*Maritaka versão: {}*'.format(versao))
+#codigo da calculadora
+@client.command(name='calc', help='calcula dois números. Apenas operações com dois números.')
+async def calc(ctx, n1, sinal, n2):
+    if sinal == '+':
+        s = float(n1) + float(n2)
+        await ctx.send('Soma: {:.1f}'.format(s))
+    elif sinal == '-':
+        s = float(n1) - float(n2)
+        await ctx.send('Subtração: {:.1f}'.format(s))
+    elif sinal == '*':
+        s = float(n1) * float(n2)
+        await ctx.send('Multiplicação: {:.1f}'.format(s))
+    elif sinal == '/':
+        s = float(n1) / float(n2)
+        await ctx.send('Divisão: {:.1f}'.format(s))
+    elif sinal == '%':
+        s = float(n1) % float(n2)
+        await ctx.send('Módulo: {:.1f}'.format(s))
+    elif sinal == '**':
+        s = float(n1) ** float(n2)
+        await ctx.send('Exponenciação: {:.1f}'.format(s))
+
+#=-=-==-=-=*** Eventos de mensagem ***=-=-==-=-=
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return None
+    canal = message.channel
+    msg = message.content
+    marcar = message.author.id
+    maritaka_alias = ['?say','?diga','?fale','?talk']
+
+    #envia uma mensagem aleatória se o bot for marcado
+    if '660353273659916299' in msg and message.author != client.user:
+        frases = ['Oi','Sup!','Eae','Chamou, sir?','Ao seu dispor','Sim, Essa sou eu','Aye aye, sir!','Tô a fazer chá','Estou a apreciar a beleza do lorde marbas, não enche!','Dormindo 😴️']
+        await canal.send(random.choice(frases))
+
+    await client.process_commands(message)#sem esta linha os "comandos" não funcionam
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.errors.CheckFailure):
+        await ctx.send('Você não tem permissão pra usar esse comando!.')
    
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.errors.CommandInvokeError):
+        await ctx.send('Ocorreu um error ao executar esse comando.')
+
 
 #rodando o client
 client.run(token)

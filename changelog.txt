@@ -19,3 +19,12 @@
 3. O comando ?oi agora menciona o usuário.
 4. Adicionado o comando ?moeda o qual retorna cara ou coroa.
 5. Correções de bug e error.
+
+#Maritaka bot versão 1.0
+1. Agora o bot usa python 3.6
+2. Diversas melhorias no código.
+3. Atualizado códigos defazados.
+4. Adicionado custum status.
+5. Adicionado comando para rolar dados.
+6. Adicionado comando para evocar o convite do bot.
+7. Adicionado comando de limpar mesagens.
