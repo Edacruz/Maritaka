@@ -1,13 +1,13 @@
 # -*- coding: UTF-8 -*- 
-# Maritaka bot versão 1.0
+# Maritaka bot versão 1.0.1
 import discord
 import asyncio
 import random
 from discord.ext import commands
 
 prefixo = "*"
-versao = 'beta 1.0'
-build = 'HE 12020/03/26'
+versao = 'beta 1.0.1'
+build = 'HE 12020/03/29'
 client = commands.Bot(command_prefix=prefixo)
 token = 'dicord_token'
 
@@ -31,6 +31,11 @@ async def on_ready():
 async def oi(ctx):
     saldacoes = ['Saudações','Olá','Salve','Eae','Coé','Fala!','Sup']
     await ctx.send(f'{random.choice(saldacoes)}, <@{ctx.author.id}>')
+
+@client.command(name='ping', help='Retorna o ping do bot.')
+async def ping(ctx):
+    await ctx.send(f'Pong! {round(client.latency*1000)}ms')
+
 
 @client.command(name='dado', help='Lança um dado.')
 async def dado(ctx, lados: int = 6, qt_dados: int = 1):
@@ -67,19 +72,15 @@ async def gi(ctx, deus="all"):
 #=-=-=-=-=-=-=-=xxx Fim da descrição dos deuses xxx=-=-=-=-=-=-=-=
 
 #comando que repeti a mensagem enviada
-@client.command(name='maritaka', help='Repete a sua mensagem.')
-async def say(ctx):
+@client.command(name='maritaka', help='Repete a sua mensagem.', aliases=['say','diga','talk'])
+async def say(ctx, *, mensagem,):
     msg = ctx.message.content
-    canal = ctx.message.channel
-    messages = []
-    async for message in canal.history(limit = 1):
-        messages.append(message)
-    await canal.delete_messages(messages)
-    await ctx.send(msg[9:])
+    await ctx.channel.purge(limit = 1)
+    await ctx.send(mensagem)
 
 
 #faz o bot contar até o numero estipulado.
-@client.command(name='flood', help='Faz um flood maneiro.', aliases=['spam','cebola'])
+@client.command(name='flood', help='Faz um flood maneiro.', aliases=['spam','conte','contar','count'])
 async def flood(ctx, maximo: int):
     spam = 0
     if maximo > 100:
@@ -128,33 +129,6 @@ async def v(ctx):
 async def convite(ctx):
     await ctx.send('https://discordapp.com/oauth2/authorize?client_id=660353273659916299&permissions=537159744&scope=bot')
 
-@client.command(pass_context=True, name='limpar', help='apaga uma dada quantidade de mensagens.', aliases=['clean','apagar','clear','apage','deletar','delete','del'])
-@commands.has_permissions(manage_messages=True)
-async def limpar(ctx, amount=1):
-    if amount == 100:
-        amount = 99
-    if amount > 100: 
-        return await ctx.send('Limite excedido, eu posso apenas limpar 100 mensagens por vez.')
-    else:    
-        canal = ctx.message.channel
-        messages = []
-        async for message in canal.history(limit = amount + 1):
-            messages.append(message)
-        await canal.delete_messages(messages)
-    
-        if amount > 1: 
-            await ctx.send(f'{amount} mensagens deletadas por <@{ctx.message.author.id}>')     
-        else:
-            await ctx.send(f'{amount} mensagem deletada por <@{ctx.message.author.id}>')
-
-@client.command(name='esbofetear', help='esbofeteia alguém.', aliases=['tapa','slap'])
-async def tapa(ctx, usuario):
-    if usuario == '<@122727645132750848>':
-        await ctx.send(f'Você não pode bater no meu mestre')
-    else:
-        await ctx.send(f'<@{ctx.author.id}> deu uma bifa em {usuario}')
-
-
 #codigo da calculadora
 @client.command(name='calc', help='calcula dois números. Apenas operações com dois números.')
 async def calc(ctx, n1, sinal, n2):
@@ -176,6 +150,57 @@ async def calc(ctx, n1, sinal, n2):
     elif sinal == '**':
         s = float(n1) ** float(n2)
         await ctx.send('Exponenciação: {:.1f}'.format(s))
+#=-=-=-=-=-=-=-=xxx Comandos de interação xxx=-=-=-=-=-=-=-=
+@client.command(name='esbofetear', help='esbofeteia alguém.', aliases=['tapa','slap'])
+async def tapa(ctx, usuario):
+    if usuario == '<@122727645132750848>':
+        await ctx.send(f'Você não pode bater no meu mestre')
+    else:
+        await ctx.send(f'<@{ctx.author.id}> deu uma bifa em {usuario}')
+
+#=-=-=-=-=-=-=-=xxx Comandos de moderação xxx=-=-=-=-=-=-=-=
+
+#limpar mensagens
+@client.command(name='limpar', help='apaga uma dada quantidade de mensagens.', aliases=['clean','apagar','clear','apage','deletar','delete','del'])
+@commands.has_permissions(manage_messages=True)
+async def limpar(ctx, amount=1):
+    if amount == 100:
+        amount = 99
+    elif amount > 100: 
+        return await ctx.send('Limite excedido, eu posso apenas limpar 100 mensagens por vez.')
+    elif amount < 1:
+        await ctx.send('Digite um número válido!')
+    else:    
+        await ctx.channel.purge(limit = amount + 1)
+    
+        if amount > 1: 
+            await ctx.send(f'{amount} mensagens deletadas por <@{ctx.message.author.id}>')   
+        else:
+            await ctx.send(f'{amount} mensagem deletada por <@{ctx.message.author.id}>')
+
+#kick
+@client.command(name='kick', help='Expulsa um usuário do servidor.', aliases=['expulsar'])
+async def kick(ctx, member : discord.Member, *, motivo=None):
+    await member.kick(reason=motivo)
+
+#ban
+@client.command(name='ban', help='Bane um usuário do servidor.', aliases=['banir'])
+async def ban(ctx, member : discord.Member, *, motivo=None):
+    await member.ban(reason=motivo)
+
+#unban
+@client.command(name='unban', help='Desbane um usuário do servidor.')
+async def unban(ctx, *, member):
+    usuarios_banidos = await ctx.guild.bans()
+    member_name, member_discriminator = member.split('#')
+    for ban_entry in usuarios_banidos:
+        user = ban_entry.user
+        if(user.name, user.discriminator) == (member_name, member_discriminator):
+            await ctx.guild.unban(user)
+            await ctx.send(f'{user.name}#{user.discriminator} foi desbanido!')
+            return
+
+#=-=-=-=-=-=-=-=xxx Fim dos comandos de moderação xxx=-=-=-=-=-=-=-=
 
 #=-=-==-=-=*** Eventos de mensagem ***=-=-==-=-=
 @client.event
@@ -185,7 +210,6 @@ async def on_message(message):
     canal = message.channel
     msg = message.content
     marcar = message.author.id
-    maritaka_alias = ['?say','?diga','?fale','?talk']
 
     #envia uma mensagem aleatória se o bot for marcado
     if '660353273659916299' in msg and message.author != client.user:
@@ -197,11 +221,20 @@ async def on_message(message):
 async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
         await ctx.send('Você não tem permissão pra usar esse comando!.')
-   
-@client.event
-async def on_command_error(ctx, error):
-    if isinstance(error, commands.errors.CommandInvokeError):
+    elif isinstance(error, commands.errors.CommandInvokeError):
         await ctx.send('Ocorreu um error ao executar esse comando.')
+        print(f'{error}\n{commands.errors.CommandInvokeError}')
+   
+
+#quando alguém entrar no sever
+@client.event
+async def on_member_join(member):
+    print(f'{member} has joined the sever')
+
+#quando alguém sair do sever
+@client.event
+async def on_member_remove(member):
+    print(f'{member} has left the sever')
 
 
 #rodando o client
