@@ -4,12 +4,17 @@ import discord
 import asyncio
 import random
 from discord.ext import commands
+import json
+
+
+key = open("key.txt","r")
+key.close
 
 prefixo = "*"
-versao = 'beta 1.0.1'
-build = 'HE 12020/03/29'
+versao = 'beta 1.0.1.1'
+build = 'HE 12020/04/15'
 client = commands.Bot(command_prefix=prefixo)
-token = 'dicord_token'
+token = key.read()#aqui vai o tolken do bot
 
 #imprimindo status do bot
 cstatus = ['Olá, Marilene.','Fazendo chá.','Ara :3','Marbas-sama','owo','Agora com mais códigos inúteis.']
