@@ -11,15 +11,12 @@ key = open("key.txt","r")
 key.close
 
 prefixo = "*"
-versao = 'beta 1.0.1.1'
-build = 'HE 12020/04/15'
+versao = 'beta 1.0.1.2'
+build = 'HE12020/04/15'
 client = commands.Bot(command_prefix=prefixo)
 token = key.read()#aqui vai o tolken do bot
 
 #imprimindo status do bot
-cstatus = ['Olá, Marilene.','Fazendo chá.','Ara :3','Marbas-sama','owo','Agora com mais códigos inúteis.']
-bstatus = random.choice(cstatus)
-#=-=-==-=-= eventos de mensagem =-=-==-=-=
 @client.event
 async def on_ready():
         print('=-'*10,'.:ONLINE:.','-='*10)
@@ -28,8 +25,7 @@ async def on_ready():
         print('Cliente user id: ',client.user.id)
         print('=-'*10,'xxFIMxxx','-='*10)
         #setando o status online do bot. online = online; não perturbe = dnd; ausente = idle;
-        await client.change_presence(status=discord.Status.dnd, activity=discord.Game(bstatus))
-
+        await client.change_presence(status=discord.Status.dnd, activity=discord.Game('Fazendo chá.'))
 
 #=-=-==-=-=*** Main Commands ***=-=-==-=-=
 @client.command(name='oi', help='Faz a Maritaka te dar oi.')
@@ -76,7 +72,7 @@ async def gi(ctx, deus="all"):
 
 #=-=-=-=-=-=-=-=xxx Fim da descrição dos deuses xxx=-=-=-=-=-=-=-=
 
-#comando que repeti a mensagem enviada
+#comando que repete a mensagem enviada
 @client.command(name='maritaka', help='Repete a sua mensagem.', aliases=['say','diga','talk'])
 async def say(ctx, *, mensagem,):
     msg = ctx.message.content
@@ -111,9 +107,9 @@ async def jackpot(ctx):
 async def moeda(ctx):
         moeda = random.randint(0,1)
         if moeda == 1:
-            await ctx.send("Cara 😉")
+            await ctx.send('😉| **Cara!**')
         else:
-            await ctx.send("Coroa 👑")
+            await ctx.send('👑| **Coroa!**')
 
 @client.command(name='joguinho', help='Joguinho de advinhar o número.', aliases=['joguin'])
 async def joguin(ctx, sua_escolha: int):
@@ -155,15 +151,15 @@ async def calc(ctx, n1, sinal, n2):
     elif sinal == '**':
         s = float(n1) ** float(n2)
         await ctx.send('Exponenciação: {:.1f}'.format(s))
-#=-=-=-=-=-=-=-=xxx Comandos de interação xxx=-=-=-=-=-=-=-=
-@client.command(name='esbofetear', help='esbofeteia alguém.', aliases=['tapa','slap'])
-async def tapa(ctx, usuario):
+#=-=-=-=-=-=-=-=.: Comandos de interação :.=-=-=-=-=-=-=-=
+@client.command(name='bater', help='esbofeteia alguém.', aliases=['tapa','slap'])
+async def bater(ctx, usuario):
     if usuario == '<@122727645132750848>':
         await ctx.send(f'Você não pode bater no meu mestre')
     else:
         await ctx.send(f'<@{ctx.author.id}> deu uma bifa em {usuario}')
 
-#=-=-=-=-=-=-=-=xxx Comandos de moderação xxx=-=-=-=-=-=-=-=
+#=-=-=-=-=-=-=-=xxx Fim dos comandos de moderação xxx=-=-=-=-=-=-=-=
 
 #limpar mensagens
 @client.command(name='limpar', help='apaga uma dada quantidade de mensagens.', aliases=['clean','apagar','clear','apage','deletar','delete','del'])
@@ -182,6 +178,7 @@ async def limpar(ctx, amount=1):
             await ctx.send(f'{amount} mensagens deletadas por <@{ctx.message.author.id}>')   
         else:
             await ctx.send(f'{amount} mensagem deletada por <@{ctx.message.author.id}>')
+
 
 #kick
 @client.command(name='kick', help='Expulsa um usuário do servidor.', aliases=['expulsar'])
@@ -218,30 +215,19 @@ async def on_message(message):
 
     #envia uma mensagem aleatória se o bot for marcado
     if '660353273659916299' in msg and message.author != client.user:
-        frases = ['Oi','Sup!','Eae','Chamou, sir?','Ao seu dispor','Sim, Essa sou eu','Aye aye, sir!','Tô a fazer chá','Estou a apreciar a beleza do lorde marbas, não enche!','Dormindo 😴️']
+        frases = ['Oi','Sup!','Eae','Chamou, sir?','Ao seu dispor','Sim, Essa sou eu','Aye aye, sir!','Tô a fazer chá','Dormindo 😴️']
         await canal.send(random.choice(frases))
 
     await client.process_commands(message)#sem esta linha os "comandos" não funcionam
 @client.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
-        await ctx.send('Você não tem permissão pra usar esse comando!.')
+        await ctx.send('Você não tem permissão para usar esse comando!')
     elif isinstance(error, commands.errors.CommandInvokeError):
         await ctx.send('Ocorreu um error ao executar esse comando.')
         print(f'{error}\n{commands.errors.CommandInvokeError}')
-   
-
-#quando alguém entrar no sever
-@client.event
-async def on_member_join(member):
-    print(f'{member} has joined the sever')
-
-#quando alguém sair do sever
-@client.event
-async def on_member_remove(member):
-    print(f'{member} has left the sever')
-
+    elif isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send('Por favor informe os parametros necessários!') 
 
 #rodando o client
 client.run(token)
-
