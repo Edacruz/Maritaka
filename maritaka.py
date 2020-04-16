@@ -1,5 +1,4 @@
 # -*- coding: UTF-8 -*- 
-# Maritaka bot versão 1.0.1
 import discord
 import asyncio
 import random
@@ -11,8 +10,7 @@ key = open("key.txt","r")
 key.close
 
 prefixo = "*"
-versao = 'beta 1.0.1.2'
-build = 'HE12020/04/15'
+build = 'HE12020/04/16'
 client = commands.Bot(command_prefix=prefixo)
 token = key.read()#aqui vai o tolken do bot
 
@@ -52,7 +50,7 @@ async def irineu(ctx):
 
 @client.command(name='sobre', help='Sobre o bot.')
 async def sobre(ctx):
-    await ctx.send(f'Bot criando por: **Marbas Lag da Silva Stark**, she was born in **HE12019/12/28**, at 14:09.\nDigite **{prefixo}help** para ver todos os comados.\n*versão do bot: {versao}\nversão do Python: 3.6.9*\n*Build date:* **{build}** ')
+    await ctx.send(f'Bot criando por: **Marbas Lag da Silva Stark**, she was born in **HE12019/12/28**, at 14:09.\nDigite **{prefixo}help** para ver todos os comados.\nversão do Python: 3.6.9*\n*Build date:* **{build}** ')
 
 #deuses
 @client.command(name='gi', help='Mostra a descrição de todos os deuses.\nChauri, Gabriel, Marbas, Sub, Tainaka.')
@@ -81,7 +79,7 @@ async def say(ctx, *, mensagem,):
 
 
 #faz o bot contar até o numero estipulado.
-@client.command(name='flood', help='Faz um flood maneiro.', aliases=['spam','conte','contar','count'])
+@client.command(name='flood', help='Faz um flood maneiro. ', aliases=['spam','conte','contar','count'])
 async def flood(ctx, maximo: int):
     spam = 0
     if maximo > 100:
@@ -107,9 +105,9 @@ async def jackpot(ctx):
 async def moeda(ctx):
         moeda = random.randint(0,1)
         if moeda == 1:
-            await ctx.send('😉| **Cara!**')
+            await ctx.send('😉 | **Cara!**')
         else:
-            await ctx.send('👑| **Coroa!**')
+            await ctx.send('👑 | **Coroa!**')
 
 @client.command(name='joguinho', help='Joguinho de advinhar o número.', aliases=['joguin'])
 async def joguin(ctx, sua_escolha: int):
@@ -121,10 +119,6 @@ async def joguin(ctx, sua_escolha: int):
         await ctx.send('Digite um número entre 0 e 9 😐️')
     else:
         await ctx.send(f'<@{ctx.author.id}>, você perdeu 😭 \nVocê escolheu: **{sua_escolha}**\nResposta certa: **{sekai}**')
-
-@client.command(name='versao', help='Mostra a versão do bot.', aliases=['v','ver'])
-async def v(ctx):
-    await ctx.send(f'*Maritaka versão: {versao}*')
 
 @client.command(name='convite', help='Link para convidar o bot.', aliases=['convidar','invite'])
 async def convite(ctx):
@@ -215,19 +209,24 @@ async def on_message(message):
 
     #envia uma mensagem aleatória se o bot for marcado
     if '660353273659916299' in msg and message.author != client.user:
-        frases = ['Oi','Sup!','Eae','Chamou, sir?','Ao seu dispor','Sim, Essa sou eu','Aye aye, sir!','Tô a fazer chá','Dormindo 😴️']
-        await canal.send(random.choice(frases))
+        await canal.send(f'Meu prefixo neste servidor é {prefixo}, {marcar}')
 
     await client.process_commands(message)#sem esta linha os "comandos" não funcionam
+
+#trantando exceções
 @client.event
 async def on_command_error(ctx, error):
-    if isinstance(error, commands.errors.CheckFailure):
-        await ctx.send('Você não tem permissão para usar esse comando!')
-    elif isinstance(error, commands.errors.CommandInvokeError):
+    if isinstance(error, commands.errors.CommandInvokeError):
         await ctx.send('Ocorreu um error ao executar esse comando.')
         print(f'{error}\n{commands.errors.CommandInvokeError}')
+
     elif isinstance(error, commands.MissingRequiredArgument):
         await ctx.send('Por favor informe os parametros necessários!') 
+
+    elif isinstance(error, commands.errors.CommandNotFound):
+        await ctx.send('Esse comando não existe, verifique a ortografia.')
+    elif isinstance(error, commands.errors.MissingPermissions):
+        await ctx.send('Você não tem permissão para usar esse comando!')
 
 #rodando o client
 client.run(token)
