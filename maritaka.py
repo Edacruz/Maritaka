@@ -6,6 +6,10 @@ from discord.ext import commands
 import json
 
 
+def locked(ctx):#codigo para bloquear comandos
+    return ctx.author.id == 122727645132750848
+
+
 key = open("key.txt","r")
 key.close
 
@@ -50,7 +54,7 @@ async def irineu(ctx):
 
 @client.command(name='sobre', help='Sobre o bot.')
 async def sobre(ctx):
-    await ctx.send(f'Bot criando por: **Marbas Lag da Silva Stark**, she was born in **HE12019/12/28**, at 14:09.\nDigite **{prefixo}help** para ver todos os comados.\nversão do Python: 3.6.9*\n*Build date:* **{build}** ')
+    await ctx.send(f'Bot criando por: **Marbas L.S. Stark**, she was born in **HE12019/12/28**, at 14:09.\nDigite **{prefixo}help** para ver todos os comados.\nversão do Python: 3.6.9*\n*Build date:* **{build}** ')
 
 #deuses
 @client.command(name='gi', help='Mostra a descrição de todos os deuses.\nChauri, Gabriel, Marbas, Sub, Tainaka.')
@@ -124,7 +128,9 @@ async def joguin(ctx, sua_escolha: int):
 async def convite(ctx):
     await ctx.send('https://discordapp.com/oauth2/authorize?client_id=660353273659916299&permissions=537159744&scope=bot')
 
+
 #codigo da calculadora
+@commands.check(locked)
 @client.command(name='calc', help='calcula dois números. Apenas operações com dois números.')
 async def calc(ctx, n1, sinal, n2):
     if sinal == '+':
