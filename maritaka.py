@@ -10,13 +10,12 @@ def locked(ctx):#codigo para bloquear comandos
     return ctx.author.id == 122727645132750848
 
 
-key = open("key.txt","r")
-key.close
-
 prefixo = "*"
-build = 'HE12020/04/16'
+build = 'HE12020/04/18'
 client = commands.Bot(command_prefix=prefixo)
-token = key.read()#aqui vai o tolken do bot
+chave = open('key.txt','r')
+token = chave.read()#aqui vai o tolken do bot
+chave.close
 
 #imprimindo status do bot
 @client.event
@@ -76,22 +75,25 @@ async def gi(ctx, deus="all"):
 
 #comando que repete a mensagem enviada
 @client.command(name='maritaka', help='Repete a sua mensagem.', aliases=['say','diga','talk'])
-async def say(ctx, *, mensagem,):
+async def say(ctx, *, mensagem):
     msg = ctx.message.content
     await ctx.channel.purge(limit = 1)
     await ctx.send(mensagem)
 
 
 #faz o bot contar até o numero estipulado.
-@client.command(name='flood', help='Faz um flood maneiro. ', aliases=['spam','conte','contar','count'])
-async def flood(ctx, maximo: int):
-    spam = 0
+@client.command(name='flood', help='Faz um flood maneiro. ', aliases=['spam'])
+async def flood(ctx, maximo: int,*, mensagem='default'):   
     if maximo > 100:
         await ctx.send('Limite excedido, digite um valor menor que 100.')
-        maximo = 0     
-    while maximo > 0 and maximo >= spam:
-            await ctx.send(spam)
-            spam += 1  
+        maximo = 0 
+    else:
+        if mensagem == 'default':     
+            for spam in range(0,maximo):
+                await ctx.send(spam+1)
+        else:
+           for spam in range(0,maximo):
+                await ctx.send(mensagem) 
 
 #joguinho de jackpot, que gera 3 números aleatórios
 @client.command(name='jackpot', help='Sorteia 3 números.', aliases=['jp'])
