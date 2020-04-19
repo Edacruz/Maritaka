@@ -11,7 +11,7 @@ def locked(ctx):#codigo para bloquear comandos
 
 
 prefixo = "*"
-build = 'HE12020/04/18'
+build = 'HE12020/04/19'
 client = commands.Bot(command_prefix=prefixo)
 chave = open('key.txt','r')
 token = chave.read()#aqui vai o tolken do bot
@@ -29,10 +29,10 @@ async def on_ready():
         await client.change_presence(status=discord.Status.dnd, activity=discord.Game('Fazendo chá.'))
 
 #=-=-==-=-=*** Main Commands ***=-=-==-=-=
-@client.command(name='oi', help='Faz a Maritaka te dar oi.')
+@client.command(name='oi', help='Faz a Maritaka dar-te oi.')
 async def oi(ctx):
-    saldacoes = ['Saudações','Olá','Salve','Eae','Coé','Fala!','Sup']
-    await ctx.send(f'{random.choice(saldacoes)}, <@{ctx.author.id}>')
+    saudacoes = ['Saudações','Olá','Salve','Eae','Coé','Fala!','Sup']
+    await ctx.send(f'{random.choice(saudacoes)}, <@{ctx.author.id}>')
 
 @client.command(name='ping', help='Retorna o ping do bot.')
 async def ping(ctx):
@@ -156,7 +156,7 @@ async def calc(ctx, n1, sinal, n2):
 #=-=-=-=-=-=-=-=.: Comandos de interação :.=-=-=-=-=-=-=-=
 @client.command(name='bater', help='esbofeteia alguém.', aliases=['tapa','slap'])
 async def bater(ctx, usuario):
-    if usuario == '<@122727645132750848>':
+    if usuario == 122727645132750848:
         await ctx.send(f'Você não pode bater no meu mestre')
     else:
         await ctx.send(f'<@{ctx.author.id}> deu uma bifa em {usuario}')
@@ -170,7 +170,7 @@ async def limpar(ctx, amount=1):
     if amount == 100:
         amount = 99
     elif amount > 100: 
-        return await ctx.send('Limite excedido, eu posso apenas limpar 100 mensagens por vez.')
+        return await ctx.send('Limite excedido, eu posso limpar apenas 100 mensagens por vez.')
     elif amount < 1:
         await ctx.send('Digite um número válido!')
     else:    
@@ -191,6 +191,7 @@ async def kick(ctx, member : discord.Member, *, motivo=None):
 @client.command(name='ban', help='Bane um usuário do servidor.', aliases=['banir'])
 async def ban(ctx, member : discord.Member, *, motivo=None):
     await member.ban(reason=motivo)
+    await ctx.send(f'{member} foi banido.\nMotivo: {motivo}')
 
 #unban
 @client.command(name='unban', help='Desbane um usuário do servidor.')
@@ -217,7 +218,7 @@ async def on_message(message):
 
     #envia uma mensagem aleatória se o bot for marcado
     if '660353273659916299' in msg and message.author != client.user:
-        await canal.send(f'Meu prefixo neste servidor é {prefixo}, {marcar}')
+        await canal.send(f'Meu prefixo neste servidor é {prefixo}, <@{marcar}>')
 
     await client.process_commands(message)#sem esta linha os "comandos" não funcionam
 
@@ -225,14 +226,14 @@ async def on_message(message):
 @client.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CommandInvokeError):
-        await ctx.send('Ocorreu um error ao executar esse comando.')
+        await ctx.send('Ocorreu um error ao executar este comando.')
         print(f'{error}\n{commands.errors.CommandInvokeError}')
 
     elif isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send('Por favor informe os parametros necessários!') 
+        await ctx.send('Por favor informe os parâmetro necessários!') 
 
     elif isinstance(error, commands.errors.CommandNotFound):
-        await ctx.send('Esse comando não existe, verifique a ortografia.')
+        await ctx.send('Este comando não existe, verifique a ortografia.')
     elif isinstance(error, commands.errors.MissingPermissions):
         await ctx.send('Você não tem permissão para usar esse comando!')
 
