@@ -183,17 +183,20 @@ async def limpar(ctx, amount=1):
 
 
 #kick
+@commands.has_permissions(manage_messages=True)
 @client.command(name='kick', help='Expulsa um usuário do servidor.', aliases=['expulsar'])
 async def kick(ctx, member : discord.Member, *, motivo=None):
     await member.kick(reason=motivo)
-
+    await ctx.send(f'{member} foi expulso.\nMotivo: {motivo}')
 #ban
+@commands.has_permissions(manage_messages=True)
 @client.command(name='ban', help='Bane um usuário do servidor.', aliases=['banir'])
 async def ban(ctx, member : discord.Member, *, motivo=None):
     await member.ban(reason=motivo)
     await ctx.send(f'{member} foi banido.\nMotivo: {motivo}')
 
 #unban
+@commands.has_permissions(manage_messages=True)
 @client.command(name='unban', help='Desbane um usuário do servidor.')
 async def unban(ctx, *, member):
     usuarios_banidos = await ctx.guild.bans()
