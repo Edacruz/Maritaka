@@ -4,6 +4,7 @@ import asyncio
 import random
 from discord.ext import commands
 import json
+import os
 
 
 def locked(ctx):#codigo para bloquear comandos
@@ -27,6 +28,19 @@ async def on_ready():
         print('=-'*10,'xxFIMxxx','-='*10)
         #setando o status online do bot. online = online; não perturbe = dnd; ausente = idle;
         await client.change_presence(status=discord.Status.dnd, activity=discord.Game('Fazendo chá.'))
+
+
+@client.command()
+async def habilitar(ctx, extension):
+    client.load_extension(f'cogs.{extension}')
+    await ctx.send(f'{extension} foi habilitado!')
+
+
+@client.command()
+async def desabilitar(ctx, extension):
+    client.unload_extension(f'cogs.{extension}')
+    await ctx.send(f'{extension} foi desabilitado!')    
+
 
 #=-=-==-=-=*** Main Commands ***=-=-==-=-=
 @client.command(name='oi', help='Faz a Maritaka dar-te oi.')
@@ -131,84 +145,7 @@ async def convite(ctx):
     await ctx.send('https://discordapp.com/oauth2/authorize?client_id=660353273659916299&permissions=537159744&scope=bot')
 
 
-#codigo da calculadora
-@commands.check(locked)
-@client.command(name='calc', help='calcula dois números. Apenas operações com dois números.')
-async def calc(ctx, n1, sinal, n2):
-    if sinal == '+':
-        s = float(n1) + float(n2)
-        await ctx.send('Soma: {:.1f}'.format(s))
-    elif sinal == '-':
-        s = float(n1) - float(n2)
-        await ctx.send('Subtração: {:.1f}'.format(s))
-    elif sinal == '*':
-        s = float(n1) * float(n2)
-        await ctx.send('Multiplicação: {:.1f}'.format(s))
-    elif sinal == '/':
-        s = float(n1) / float(n2)
-        await ctx.send('Divisão: {:.1f}'.format(s))
-    elif sinal == '%':
-        s = float(n1) % float(n2)
-        await ctx.send('Módulo: {:.1f}'.format(s))
-    elif sinal == '**':
-        s = float(n1) ** float(n2)
-        await ctx.send('Exponenciação: {:.1f}'.format(s))
-#=-=-=-=-=-=-=-=.: Comandos de interação :.=-=-=-=-=-=-=-=
-@client.command(name='bater', help='esbofeteia alguém.', aliases=['tapa','slap'])
-async def bater(ctx, usuario):
-    if usuario == 122727645132750848:
-        await ctx.send(f'Você não pode bater no meu mestre')
-    else:
-        await ctx.send(f'<@{ctx.author.id}> deu uma bifa em {usuario}')
 
-#=-=-=-=-=-=-=-=xxx Fim dos comandos de moderação xxx=-=-=-=-=-=-=-=
-
-#limpar mensagens
-@client.command(name='limpar', help='apaga uma dada quantidade de mensagens.', aliases=['clean','apagar','clear','apage','deletar','delete','del'])
-@commands.has_permissions(manage_messages=True)
-async def limpar(ctx, amount=1):
-    if amount == 100:
-        amount = 99
-    elif amount > 100: 
-        return await ctx.send('Limite excedido, eu posso limpar apenas 100 mensagens por vez.')
-    elif amount < 1:
-        await ctx.send('Digite um número válido!')
-    else:    
-        await ctx.channel.purge(limit = amount + 1)
-    
-        if amount > 1: 
-            await ctx.send(f'{amount} mensagens deletadas por <@{ctx.message.author.id}>')   
-        else:
-            await ctx.send(f'{amount} mensagem deletada por <@{ctx.message.author.id}>')
-
-
-#kick
-@commands.has_permissions(manage_messages=True)
-@client.command(name='kick', help='Expulsa um usuário do servidor.', aliases=['expulsar'])
-async def kick(ctx, member : discord.Member, *, motivo=None):
-    await member.kick(reason=motivo)
-    await ctx.send(f'{member} foi expulso.\nMotivo: {motivo}')
-#ban
-@commands.has_permissions(manage_messages=True)
-@client.command(name='ban', help='Bane um usuário do servidor.', aliases=['banir'])
-async def ban(ctx, member : discord.Member, *, motivo=None):
-    await member.ban(reason=motivo)
-    await ctx.send(f'{member} foi banido.\nMotivo: {motivo}')
-
-#unban
-@commands.has_permissions(manage_messages=True)
-@client.command(name='unban', help='Desbane um usuário do servidor.')
-async def unban(ctx, *, member):
-    usuarios_banidos = await ctx.guild.bans()
-    member_name, member_discriminator = member.split('#')
-    for ban_entry in usuarios_banidos:
-        user = ban_entry.user
-        if(user.name, user.discriminator) == (member_name, member_discriminator):
-            await ctx.guild.unban(user)
-            await ctx.send(f'{user.name}#{user.discriminator} foi desbanido!')
-            return
-
-#=-=-=-=-=-=-=-=xxx Fim dos comandos de moderação xxx=-=-=-=-=-=-=-=
 
 #=-=-==-=-=*** Eventos de mensagem ***=-=-==-=-=
 @client.event
@@ -239,6 +176,11 @@ async def on_command_error(ctx, error):
         await ctx.send('Este comando não existe, verifique a ortografia.')
     elif isinstance(error, commands.errors.MissingPermissions):
         await ctx.send('Você não tem permissão para usar esse comando!')
+
+
+for filename in os.listdir('./cogs'):
+    if filename.endswith('.py'):
+        client.load_extension(f'cogs.{filename[:-3]}')
 
 #rodando o client
 client.run(token)
