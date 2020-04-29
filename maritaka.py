@@ -1,6 +1,5 @@
 # -*- coding: UTF-8 -*- 
 import discord
-import asyncio
 import random
 from discord.ext import commands
 import json
@@ -12,7 +11,7 @@ def locked(ctx):#codigo para bloquear comandos
 
 
 prefixo = "*"
-build = 'HE12020/04/19'
+build = 'HE12020/04/29'
 client = commands.Bot(command_prefix=prefixo)
 chave = open('key.txt','r')
 token = chave.read()#aqui vai o tolken do bot
@@ -30,13 +29,13 @@ async def on_ready():
         await client.change_presence(status=discord.Status.dnd, activity=discord.Game('Fazendo chá.'))
 
 
-@client.command()
+@client.command(name='habilitar', help='habilita um comando')
 async def habilitar(ctx, extension):
     client.load_extension(f'cogs.{extension}')
     await ctx.send(f'{extension} foi habilitado!')
 
 
-@client.command()
+@client.command(name='desabilitar', help='desabilita um comando')
 async def desabilitar(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
     await ctx.send(f'{extension} foi desabilitado!')    
@@ -52,14 +51,6 @@ async def oi(ctx):
 async def ping(ctx):
     await ctx.send(f'Pong! {round(client.latency*1000)}ms')
 
-
-@client.command(name='dado', help='Lança um dado.')
-async def dado(ctx, lados: int = 6, qt_dados: int = 1):
-    dado = [
-        str(random.choice(range(1, lados + 1)))
-        for _ in range(qt_dados)
-    ]
-    await ctx.send(', '.join(dado))
 
 @client.command(name='irineu', help='Você não sabe nem eu.')
 async def irineu(ctx):
@@ -95,56 +86,9 @@ async def say(ctx, *, mensagem):
     await ctx.send(mensagem)
 
 
-#faz o bot contar até o numero estipulado.
-@client.command(name='flood', help='Faz um flood maneiro. ', aliases=['spam'])
-async def flood(ctx, maximo: int,*, mensagem='default'):   
-    if maximo > 100:
-        await ctx.send('Limite excedido, digite um valor menor que 100.')
-        maximo = 0 
-    else:
-        if mensagem == 'default':     
-            for spam in range(0,maximo):
-                await ctx.send(spam+1)
-        else:
-           for spam in range(0,maximo):
-                await ctx.send(mensagem) 
-
-#joguinho de jackpot, que gera 3 números aleatórios
-@client.command(name='jackpot', help='Sorteia 3 números.', aliases=['jp'])
-async def jackpot(ctx):
-    sorteio = (random.randint(0,9),random.randint(0,9),random.randint(0,9))#tupla que recebe os números sorteados
-    #testanto se todos os números são iguais
-    if sorteio[0] == sorteio[1] and sorteio[2] == sorteio[0] and sorteio[1] != 6:
-        await ctx.send(f'{sorteio}\nJackpot! 🎉\nVocê venceu!, <@{ctx.author.id}>')
-    elif sorteio[0] == 6 and sorteio[1] == sorteio[2] and sorteio[0] == sorteio[1]:
-        await ctx.send(f'{sorteio}\nJackpot! 🎉\nSatanic win! 🤘️, <@{ctx.author.id}>')
-    else:
-        await ctx.send(f'{sorteio}\n<@{ctx.author.id}>, Você perdeu 😭 ') 
-
-@client.command(name='moeda', help='Lança uma moeda para tirar cara ou coroa.', aliases=['coin'])
-async def moeda(ctx):
-        moeda = random.randint(0,1)
-        if moeda == 1:
-            await ctx.send('😉 | **Cara!**')
-        else:
-            await ctx.send('👑 | **Coroa!**')
-
-@client.command(name='joguinho', help='Joguinho de advinhar o número.', aliases=['joguin'])
-async def joguin(ctx, sua_escolha: int):
-    numero = [0,1,2,3,4,5,6,7,8,9]
-    sekai = random.choice(numero)
-    if sua_escolha == sekai:
-        await ctx.send(f'Você escolheu: **{sua_escolha}**\n<@{ctx.author.id}>, você ganhou :partying_face:')
-    elif sua_escolha not in numero:
-        await ctx.send('Digite um número entre 0 e 9 😐️')
-    else:
-        await ctx.send(f'<@{ctx.author.id}>, você perdeu 😭 \nVocê escolheu: **{sua_escolha}**\nResposta certa: **{sekai}**')
-
 @client.command(name='convite', help='Link para convidar o bot.', aliases=['convidar','invite'])
 async def convite(ctx):
     await ctx.send('https://discordapp.com/oauth2/authorize?client_id=660353273659916299&permissions=537159744&scope=bot')
-
-
 
 
 #=-=-==-=-=*** Eventos de mensagem ***=-=-==-=-=
@@ -161,6 +105,7 @@ async def on_message(message):
         await canal.send(f'Meu prefixo neste servidor é {prefixo}, <@{marcar}>')
 
     await client.process_commands(message)#sem esta linha os "comandos" não funcionam
+
 
 #trantando exceções
 @client.event
