@@ -11,7 +11,7 @@ def locked(ctx):#codigo para bloquear comandos
 
 
 prefixo = "*"
-build = 'HE12020/04/29'
+build = 'HE12020/04/30'
 client = commands.Bot(command_prefix=prefixo)
 chave = open('key.txt','r')
 token = chave.read()#aqui vai o tolken do bot
@@ -39,56 +39,6 @@ async def habilitar(ctx, extension):
 async def desabilitar(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
     await ctx.send(f'{extension} foi desabilitado!')    
-
-
-#=-=-==-=-=*** Main Commands ***=-=-==-=-=
-@client.command(name='oi', help='Faz a Maritaka dar-te oi.')
-async def oi(ctx):
-    saudacoes = ['Saudações','Olá','Salve','Eae','Coé','Fala!','Sup']
-    await ctx.send(f'{random.choice(saudacoes)}, <@{ctx.author.id}>')
-
-@client.command(name='ping', help='Retorna o ping do bot.')
-async def ping(ctx):
-    await ctx.send(f'Pong! {round(client.latency*1000)}ms')
-
-
-@client.command(name='irineu', help='Você não sabe nem eu.')
-async def irineu(ctx):
-    await ctx.send(f'<@{ctx.author.id}>, não sabe nem eu.')
-
-@client.command(name='sobre', help='Sobre o bot.')
-async def sobre(ctx):
-    await ctx.send(f'Bot criando por: **Marbas L.S. Stark**, she was born in **HE12019/12/28**, at 14:09.\nDigite **{prefixo}help** para ver todos os comados.\nversão do Python: 3.6.9*\n*Build date:* **{build}** ')
-
-#deuses
-@client.command(name='gi', help='Mostra a descrição de todos os deuses.\nChauri, Gabriel, Marbas, Sub, Tainaka.')
-async def gi(ctx, deus="all"):
-    if deus.lower() == 'marbas':
-        await ctx.send('Lorde Marbas é o meu criador, ele gosta de vacas \'-\'')
-    elif deus.lower() == 'chauri':
-        await ctx.send('Deusa da beleza e da fofura, é também esposa do lorde Marbas.')
-    elif deus.lower() == 'tainaka' or deus == 'tainara':
-        await ctx.send('Tainaka é a deusa dos alfaces 🤔')
-    elif deus.lower() == 'sub':
-        await ctx.send('Sub é o deus do trabalho voluntário.')
-    elif deus.lower() == 'gabriel':
-        await ctx.send('É o deus ou deusa das traps, é também o rei dos disfarces 👌')
-    else:
-        await ctx.send(f'Sintaxe incorrecta! digite: `{prefixo}gi <deus>`')
-
-#=-=-=-=-=-=-=-=xxx Fim da descrição dos deuses xxx=-=-=-=-=-=-=-=
-
-#comando que repete a mensagem enviada
-@client.command(name='maritaka', help='Repete a sua mensagem.', aliases=['say','diga','talk'])
-async def say(ctx, *, mensagem):
-    msg = ctx.message.content
-    await ctx.channel.purge(limit = 1)
-    await ctx.send(mensagem)
-
-
-@client.command(name='convite', help='Link para convidar o bot.', aliases=['convidar','invite'])
-async def convite(ctx):
-    await ctx.send('https://discordapp.com/oauth2/authorize?client_id=660353273659916299&permissions=537159744&scope=bot')
 
 
 #=-=-==-=-=*** Eventos de mensagem ***=-=-==-=-=
