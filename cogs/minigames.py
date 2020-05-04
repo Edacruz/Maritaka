@@ -62,6 +62,26 @@ class joguinhos(commands.Cog):
 	        await ctx.send('Digite um número entre 0 e 9 😐️')
 	    else:
 	        await ctx.send(f'<@{ctx.author.id}>, você perdeu 😭 \nVocê escolheu: **{sua_escolha}**\nResposta certa: **{sekai}**')
+	@commands.cooldown(1, 3, commands.BucketType.user)
+	@commands.command(name='pescar', help='comando de pescar', aliases=['fish'])
+	async def pescar(self, ctx):
+		lago = (random.randint(0,333),random.randint(0,333),random.randint(0,333))
+		peixe = lago[0]+lago[1]+lago[0] + 1
+		if peixe < 750:
+			await ctx.send('Você pegou um peixe comum')
+		elif peixe > 750 and peixe < 900:
+			await ctx.send('Você pegou um peixe incomum')
+		elif peixe > 900 and peixe < 990:
+			await ctx.send('Você pegou um peixe raro')
+		else:
+			await ctx.send('Você pegou um peixe lendario')
+
+	@pescar.error
+	async def pescar_error(self, ctx, error):
+		if isinstance(error, commands.CommandOnCooldown):
+			await ctx.send(f'O comando está em cooldown, tente novamente em {error.retry_after:.0f} segunds.')
+		else:
+			raise error
 
 
 def setup(client):
