@@ -2,16 +2,11 @@ import discord
 from discord.ext import commands
 
 
-def locked(ctx):#codigo para bloquear comandos
-    return ctx.author.id == 122727645132750848
-
-
 class matematica(commands.Cog):
 	def __init__(self, client):
 		self.client = client
 
-	@commands.check(locked)
-	@commands.command(name='calc', help='calcula dois números. Apenas operações com dois números.')
+	@commands.command(name='calc', help='calcula dois números. Apenas operações com dois números.', hidden=True)
 	async def calc(self, ctx, n1, sinal, n2):
 	    if sinal == '+':
 	        s = float(n1) + float(n2)

@@ -25,8 +25,8 @@ class miscelânea(commands.Cog):
 
 
 	#deuses
-	@commands.command(name='gi', help='Mostra a descrição de todos os deuses.\nChauri, Gabriel, Marbas, Sub, Tainaka.')
-	async def gi(self, ctx, deus="all"):
+	@commands.command(name='godinfo', help='Mostra a descrição de todos os deuses.\nChauri, Gabriel, Marbas, Sub, Tainaka.', aliases=['gi'])
+	async def godinfo(self, ctx, deus="all"):
 	    if deus.lower() == 'marbas':
 	        await ctx.send('Lorde Marbas é o meu criador, ele gosta de vacas \'-\'')
 	    elif deus.lower() == 'chauri':
@@ -48,8 +48,7 @@ class miscelânea(commands.Cog):
 	    await ctx.channel.purge(limit = 1)
 	    await ctx.send(mensagem)
 
-
-	@commands.command(name='sobre', help='Sobre o bot.')
+	@commands.command(name='sobre', help='Sobre o bot.', hidden=True)
 	async def sobre(self, ctx):
 	    await ctx.send(f'Bot criando por: **Marbas L.S. Stark**, she was born in **HE12019/12/28**, at 14:09.\nDigite **{prefixo}help** para ver todos os comados.\nversão do Python: 3.6.9*\n*Build date:* **{build}** ')
 
@@ -59,17 +58,5 @@ class miscelânea(commands.Cog):
 	    await ctx.send('https://discordapp.com/oauth2/authorize?client_id=660353273659916299&permissions=537159744&scope=bot')
 
 
-
-
-
-
-
-
-
-
-
-
-
 def setup(client):
 	client.add_cog(miscelânea(client))
-
