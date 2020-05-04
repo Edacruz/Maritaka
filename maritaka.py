@@ -6,12 +6,12 @@ import json
 import os
 
 
-def locked(ctx):#codigo para bloquear comandos
+def is_owner(ctx):
     return ctx.author.id == 122727645132750848
 
 
 prefixo = "*"
-build = 'HE12020/04/30'
+build = 'HE12020/05/05'
 client = commands.Bot(command_prefix=prefixo)
 chave = open('key.txt','r')
 token = chave.read()#aqui vai o tolken do bot
@@ -29,19 +29,28 @@ async def on_ready():
         await client.change_presence(status=discord.Status.dnd, activity=discord.Game('Fazendo chá.'))
 
 
-@client.command(name='habilitar', help='habilita um comando')
+@commands.check(is_owner)
+@client.command(name='habilitar', help='habilita ums cog', aliases=['enb'], hidden=True)
 async def habilitar(ctx, extension):
     client.load_extension(f'cogs.{extension}')
     await ctx.send(f'{extension} foi habilitado!')
 
 
-@client.command(name='desabilitar', help='desabilita um comando')
+@commands.check(is_owner)
+@client.command(name='desabilitar', help='desabilita uma cog', aliases=['dsb'], hidden=True)
 async def desabilitar(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
     await ctx.send(f'{extension} foi desabilitado!')    
 
 
-#=-=-==-=-=*** Eventos de mensagem ***=-=-==-=-=
+@commands.check(is_owner)
+@client.command(name='reload', help='reinicia uma cog', aliases=['r'], hidden=True)
+async def reload(ctx, extension):
+    client.unload_extension(f'cogs.{extension}')
+    client.load_extension(f'cogs.{extension}')
+    await ctx.send(f'{extension} was rebooted!')
+
+
 @client.event
 async def on_message(message):
     if message.author == client.user:
@@ -50,7 +59,6 @@ async def on_message(message):
     msg = message.content
     marcar = message.author.id
 
-    #envia uma mensagem aleatória se o bot for marcado
     if '660353273659916299' in msg and message.author != client.user:
         await canal.send(f'Meu prefixo neste servidor é {prefixo}, <@{marcar}>')
 
