@@ -9,7 +9,7 @@ class moderação(commands.Cog):
 
     #limpar mensagens
     @commands.command(name='limpar', help='apaga uma dada quantidade de mensagens.', aliases=['clear','deletar','del'])
-    #@commands.has_permissions(manage_messages=True)
+    @commands.has_permissions(manage_messages=True)
     async def limpar(self, ctx, amount=1):
         if amount == 100:
             amount = 99
