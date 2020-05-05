@@ -77,8 +77,14 @@ async def on_command_error(ctx, error):
 
     elif isinstance(error, commands.errors.CommandNotFound):
         await ctx.send('Este comando não existe, verifique a ortografia.')
+
     elif isinstance(error, commands.errors.MissingPermissions):
         await ctx.send('Você não tem permissão para usar esse comando!')
+        
+    elif isinstance(error, commands.CommandOnCooldown):
+            await ctx.send(f'<@{ctx.author.id}>, comando em cooldown, espere {error.retry_after:.0f} segundos.')
+    else:
+        raise error
 
 
 for filename in os.listdir('./cogs'):
