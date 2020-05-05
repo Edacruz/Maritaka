@@ -67,14 +67,14 @@ class joguinhos(commands.Cog):
 	async def pescar(self, ctx):
 		lago = (random.randint(0,333),random.randint(0,333),random.randint(0,333))
 		peixe = lago[0]+lago[1]+lago[0] + 1
-		if peixe < 750:
-			await ctx.send('Você pegou um peixe comum')
-		elif peixe > 750 and peixe < 900:
-			await ctx.send('Você pegou um peixe incomum')
+		if peixe < 650:
+			await ctx.send('🎣| Você pegou um peixe comum 🐟')
+		elif peixe > 650 and peixe < 900:
+			await ctx.send('🎣| Você pegou um peixe incomum 🐡')
 		elif peixe > 900 and peixe < 990:
-			await ctx.send('Você pegou um peixe raro')
+			await ctx.send('🎣| Você pegou um peixe raro 🐠')
 		else:
-			await ctx.send('Você pegou um peixe lendario')
+			await ctx.send('🎣| Você pegou um peixe lendario 🦈')
 
 	@pescar.error
 	async def pescar_error(self, ctx, error):
