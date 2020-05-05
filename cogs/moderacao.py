@@ -11,10 +11,8 @@ class moderação(commands.Cog):
     @commands.command(name='limpar', help='apaga uma dada quantidade de mensagens.', aliases=['clear','deletar','del'])
     @commands.has_permissions(manage_messages=True)
     async def limpar(self, ctx, amount=1):
-        if amount == 100:
-            amount = 99
-        elif amount > 100: 
-            return await ctx.send('Limite excedido, eu posso limpar apenas 100 mensagens por vez.')
+        if amount >= 100: 
+            return await ctx.send('Limite excedido, eu posso limpar apenas 99 mensagens por vez.')
         elif amount < 1:
             await ctx.send('Digite um número válido!')
         else:    
