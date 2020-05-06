@@ -7,7 +7,7 @@ import os
 
 
 def is_owner(ctx):
-    return ctx.author.id == 122727645132750848
+    return ctx.author.id == 122727645132750848 or ctx.author.id == 662861778467684390
 
 
 prefixo = "*"

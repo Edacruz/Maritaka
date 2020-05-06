@@ -1,6 +1,9 @@
 import discord
 from discord.ext import commands
 import random
+import json
+from uteis import fish
+
 
 class joguinhos(commands.Cog):
 	def __init__(self, client):
@@ -65,24 +68,69 @@ class joguinhos(commands.Cog):
 	        await ctx.send('Digite um número entre 0 e 9 😐️')
 	    else:
 	        await ctx.send(f'<@{ctx.author.id}>, você perdeu 😭 \nVocê escolheu: **{sua_escolha}**\nResposta certa: **{sekai}**')
-	
 
-	@commands.cooldown(1, 4, commands.BucketType.user)
+	@commands.cooldown(1, 1, commands.BucketType.user)
 	@commands.command(name='pescar', help='Pesca virtual xD', aliases=['fish'])
 	async def pescar(self, ctx):
+		dados = fish.ler("dados/inventario.json")
+
 		lago = (random.randint(0,250),random.randint(0,250),random.randint(0,250),random.randint(0,250))
+		
 		peixe = lago[0]+lago[1]+lago[2]+lago[3]
-		if peixe < 600:
+		user = ctx.author.id
+
+		'''checando se o usuario já existe.
+		   esse algoritimo é predefido como se o usuario existe, e tenta falcear essa possibilidade
+		   testanto toda hora se a variavel continua verdadeira, se em algum momento o estado da variavel
+		   mudar o resultado final será falso.	
+		'''
+		existe = True
+		
+		for casa in range(0, len(dados)):
+			if user == dados[casa]['id']:
+				existe = True
+			else: 
+				existe = False
+
+		if existe == False:
+			content = {"id": user,"peixe-c": 0,"peixe-u": 0,"peixe-r": 0,"peixe-l": 0}
+			dados.append(content)
+			existe = True
+			#dados = fish.ler("dados/inventario.json")
+			
+
+		if peixe < 1000:
+			#dados = fish.ler("dados/inventario.json")
+			print(dados)
 			await ctx.send('🎣| Você pegou um peixe **comum** 🐟')
-		elif peixe > 600 and peixe < 850:
+			#peixe.pegarpeixe("peixe-c")
+			for casa in range(0, len(dados)):				
+				if dados[casa]["id"] == ctx.author.id:
+					dados[casa]["peixe-c"] += 1
+					fish.sobrescrever("dados/inventario.json", dados)
+					dados = fish.ler("dados/inventario.json")
+
+				
+		'''elif peixe > 600 and peixe < 850:
 			await ctx.send('🎣| Você pegou um peixe **incomum** 🐡')
 		elif peixe > 850 and peixe < 990:
 			await ctx.send('🎣| Você pegou um peixe **raro** 🐠')
 		else:
-			await ctx.send('🎣| Você pegou um peixe **lendário** 🦈')
+			await ctx.send('🎣| Você pegou um peixe **lendário** 🦈')'''
 
-	#@pescar.error
-	#async def pescar_error(self, ctx, error):
+
+
+	@commands.command(name='inventario', help='mostra seu inventário', aliases=['i'])
+	async def inventario(self, ctx, usuario=0):
+		if usuario == 0:
+			usuario = ctx.author.id
+		with open('dados/inventario.json','r') as f:
+			data = json.load(f)
+		for casa in data:
+			if casa["id"] == usuario:
+				await ctx.send(f'<@{casa["id"]}> Seu inventário contem:  \n**Comum** 🐟: {casa["peixe-c"]} \n**Incomum** 🐡: {casa["peixe-u"]} \n**Raro** 🐠: {casa["peixe-r"]} \n**Lendário** 🦈: {casa["peixe-l"]}')
+
+
 		
 
 
