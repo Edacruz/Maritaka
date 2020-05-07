@@ -76,7 +76,7 @@ async def on_command_error(ctx, error):
         await ctx.send('Por favor informe os parâmetro necessários!') 
 
     elif isinstance(error, commands.errors.CommandNotFound):
-        await ctx.send('Este comando não existe, verifique a ortografia.')
+        pass
 
     elif isinstance(error, commands.errors.MissingPermissions):
         await ctx.send('Você não tem permissão para usar esse comando!')

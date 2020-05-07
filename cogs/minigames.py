@@ -72,31 +72,39 @@ class joguinhos(commands.Cog):
 
 	@commands.cooldown(1, 6, commands.BucketType.user)
 	@commands.command(name='pescar', help='Pesca virtual xD', aliases=['fish'])
-	async def pescar(self, ctx):
+	async def pescar(self, ctx, parametro="nenhum"):
 		user = ctx.author.id
-		fish.existe('dados/inventario.json', user) #checando se o usuario está cadastrado na base de dados
-		lago = (random.randint(0,250),random.randint(0,250),random.randint(0,250),random.randint(0,250))
-		peixe = lago[0]+lago[1]+lago[2]+lago[3]
+		
+		if parametro == "nenhum":
+			fish.existe('dados/inventario.json', user) #checando se o usuario está cadastrado na base de dados
+			lago = (random.randint(0,250),random.randint(0,250),random.randint(0,250),random.randint(0,250))
+			peixe = lago[0]+lago[1]+lago[2]+lago[3]
+			if peixe < 250:
+				await ctx.send(f'🎣| Você pescou um pé da **bota** 👢 do **! °•★ѕαкє★•°4052** ')
+			elif 700 > peixe > 250:
+				await ctx.send('🎣| Você pegou um peixe **comum** 🐟')
+				fish.pegarpeixe("dados/inventario.json","peixe-c", user)
+				fish.ler("dados/inventario.json")
+		
+			elif peixe > 700 and peixe < 950:
+				await ctx.send('🎣| Você pegou um peixe **incomum** 🐡')
+				fish.pegarpeixe("dados/inventario.json","peixe-u", user)
 
-		if peixe < 250:
-			await ctx.send(f'🎣| Você foi amaldiçoado pelo **! °•★ѕαкє★•°4052** e pescou uma **bota** 👢\n*Obviamente você jogou isso fora...*')
-		elif 700 > peixe > 250:
-			await ctx.send('🎣| Você pegou um peixe **comum** 🐟')
-			fish.pegarpeixe("dados/inventario.json","peixe-c", user)
-			fish.ler("dados/inventario.json")
-	
-		elif peixe > 700 and peixe < 950:
-			await ctx.send('🎣| Você pegou um peixe **incomum** 🐡')
-			fish.pegarpeixe("dados/inventario.json","peixe-u", user)
+			elif peixe > 950 and peixe < 995:
+				await ctx.send('🎣| <@{user}> Você pegou um peixe **raro** 🐠 cê é brabo mesmo hein')
+				fish.pegarpeixe("dados/inventario.json","peixe-r", user)
 
-		elif peixe > 950 and peixe < 995:
-			await ctx.send('🎣| Você pegou um peixe **raro** 🐠')
-			fish.pegarpeixe("dados/inventario.json","peixe-r", user)
-
-		else:
-			await ctx.send('🎣| Você pegou um peixe **lendário** 🦈')
-			fish.pegarpeixe("dados/inventario.json","peixe-l", user)
-
+			else:
+				await ctx.send('🎣| Você pegou um peixe **lendário** 🦈')
+				fish.pegarpeixe("dados/inventario.json","peixe-l", user)
+		elif parametro == "rank" or parametro == "r":
+			a = fish.ler("dados/inventario.json")
+			maior = a[0]['peixe-c']
+			for c in range(0, len(a)):
+				if a[c]['peixe-c'] > maior:
+					maior = a[c]['peixe-c']
+					index = c
+			await ctx.send(f"O maior ~~corno~~ pescador do mundo é o: <@{a[index]['id']}>\nPegou {a[index]['peixe-c']} peixes **comum** 🐟 slk")
 
 
 	@commands.command(name='inventario', help='mostra seu inventário', aliases=['i'])
@@ -107,9 +115,6 @@ class joguinhos(commands.Cog):
 		for casa in data:
 			if casa["id"] == usuario:
 				await ctx.send(f'<@{casa["id"]}> Seu inventário contem:  \n**Comum** 🐟: {casa["peixe-c"]} \n**Incomum** 🐡: {casa["peixe-u"]} \n**Raro** 🐠: {casa["peixe-r"]} \n**Lendário** 🦈: {casa["peixe-l"]}')
-
-
-		
 
 
 def setup(client):
