@@ -79,15 +79,16 @@ class joguinhos(commands.Cog):
 		user = ctx.author.id
 
 		dados = fish.existe('dados/inventario.json', user) #checando se o usuario está cadastrado na base de dados
-		if peixe < 600:
+		if peixe < 650:
 			await ctx.send('🎣| Você pegou um peixe **comum** 🐟')
 			fish.pegarpeixe("dados/inventario.json","peixe-c", user)
+			fish.ler("dados/inventario.json")
 	
-		elif peixe > 600 and peixe < 850:
+		elif peixe > 650 and peixe < 850:
 			await ctx.send('🎣| Você pegou um peixe **incomum** 🐡')
 			fish.pegarpeixe("dados/inventario.json","peixe-u", user)
 
-		elif peixe > 850 and peixe < 990:
+		elif peixe > 890 and peixe < 990:
 			await ctx.send('🎣| Você pegou um peixe **raro** 🐠')
 			fish.pegarpeixe("dados/inventario.json","peixe-r", user)
 

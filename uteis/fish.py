@@ -54,6 +54,7 @@ def existe(arquivo, user):
 	if existe == False:
 		content = {"id": user,"peixe-c": 0,"peixe-u": 0,"peixe-r": 0,"peixe-l": 0}
 		dados.append(content)
+		adicionar(arquivo, content)
 		existe = True
 	else:
 		dados = ler(arquivo)
