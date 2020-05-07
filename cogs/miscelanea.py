@@ -37,6 +37,8 @@ class miscelânea(commands.Cog):
 	        await ctx.send('Sub é o deus do trabalho voluntário.')
 	    elif deus.lower() == 'gabriel':
 	        await ctx.send('É o deus ou deusa das traps, é também o rei dos disfarces 👌')
+	    elif deus.lower() == 'ado':
+	    	await ctx.send('Ado é o deus dos teste vulgo cobaia')
 	    else:
 	        await ctx.send(f'Sintaxe incorrecta! digite: `{prefixo}gi <deus>`')
 
