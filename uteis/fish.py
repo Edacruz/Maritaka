@@ -6,7 +6,7 @@ def sobrescrever(arquivo, content):
 		dados = json.load(f)#carregando os dados do arquivo e salvando na variavel dados
 	with open(arquivo, 'w') as f:
 		json.dump(content, f, indent=4)
-	return print("dados atualizados com sucesso!!!")
+	return print("DADO ATUALIZADO!")
 
 
 def adicionar(arquivo, content):
@@ -15,7 +15,7 @@ def adicionar(arquivo, content):
 	with open(arquivo, 'w') as f:
 		dados.append(content)
 		json.dump(dados, f, indent=4)
-	return print("dados escritos com sucesso!!!")
+	return print("NOVO DADO ADICIONADO!!!")
 
 
 def ler(arquivo):
@@ -23,7 +23,7 @@ def ler(arquivo):
 		with open(arquivo) as f:
 			dados = json.load(f)
 	except:
-		print("tô conseguindo carregar os dados não porra")
+		print("Error ao tentar carregar os dados.")
 	else:
 		return dados
 
@@ -48,14 +48,11 @@ def existe(arquivo, user):
 	for casa in range(0, len(dados)):
 		if user == dados[casa]['id']:
 			existe = True
+			break
 		else: 
 			existe = False
 
 	if existe == False:
 		content = {"id": user,"peixe-c": 0,"peixe-u": 0,"peixe-r": 0,"peixe-l": 0}
-		dados.append(content)
 		adicionar(arquivo, content)
 		existe = True
-	else:
-		dados = ler(arquivo)
-	return dados

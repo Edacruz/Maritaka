@@ -70,25 +70,25 @@ class joguinhos(commands.Cog):
 	        await ctx.send(f'<@{ctx.author.id}>, você perdeu 😭 \nVocê escolheu: **{sua_escolha}**\nResposta certa: **{sekai}**')
 
 
-	@commands.cooldown(1, 4, commands.BucketType.user)
+	@commands.cooldown(1, 6, commands.BucketType.user)
 	@commands.command(name='pescar', help='Pesca virtual xD', aliases=['fish'])
 	async def pescar(self, ctx):
-		lago = (random.randint(0,250),random.randint(0,250),random.randint(0,250),random.randint(0,250))
-		
-		peixe = lago[0]+lago[1]+lago[2]+lago[3]
 		user = ctx.author.id
+		fish.existe('dados/inventario.json', user) #checando se o usuario está cadastrado na base de dados
+		lago = (random.randint(0,250),random.randint(0,250),random.randint(0,250),random.randint(0,250))
+		peixe = lago[0]+lago[1]+lago[2]+lago[3]
 
-		dados = fish.existe('dados/inventario.json', user) #checando se o usuario está cadastrado na base de dados
-		if peixe < 650:
+		
+		if peixe < 750:
 			await ctx.send('🎣| Você pegou um peixe **comum** 🐟')
 			fish.pegarpeixe("dados/inventario.json","peixe-c", user)
 			fish.ler("dados/inventario.json")
 	
-		elif peixe > 650 and peixe < 850:
+		elif peixe > 750 and peixe < 950:
 			await ctx.send('🎣| Você pegou um peixe **incomum** 🐡')
 			fish.pegarpeixe("dados/inventario.json","peixe-u", user)
 
-		elif peixe > 890 and peixe < 990:
+		elif peixe > 950 and peixe < 995:
 			await ctx.send('🎣| Você pegou um peixe **raro** 🐠')
 			fish.pegarpeixe("dados/inventario.json","peixe-r", user)
 
