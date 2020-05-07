@@ -1,3 +1,4 @@
 config.js
 key.txt
 *.pyc
+dados/inventario.json

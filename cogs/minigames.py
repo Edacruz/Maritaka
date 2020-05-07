@@ -1,6 +1,9 @@
 import discord
 from discord.ext import commands
 import random
+import json
+from uteis import fish
+
 
 class joguinhos(commands.Cog):
 	def __init__(self, client):
@@ -65,24 +68,45 @@ class joguinhos(commands.Cog):
 	        await ctx.send('Digite um número entre 0 e 9 😐️')
 	    else:
 	        await ctx.send(f'<@{ctx.author.id}>, você perdeu 😭 \nVocê escolheu: **{sua_escolha}**\nResposta certa: **{sekai}**')
-	
+
 
 	@commands.cooldown(1, 4, commands.BucketType.user)
 	@commands.command(name='pescar', help='Pesca virtual xD', aliases=['fish'])
 	async def pescar(self, ctx):
 		lago = (random.randint(0,250),random.randint(0,250),random.randint(0,250),random.randint(0,250))
+		
 		peixe = lago[0]+lago[1]+lago[2]+lago[3]
+		user = ctx.author.id
+
+		dados = fish.existe('dados/inventario.json', user) #checando se o usuario está cadastrado na base de dados
 		if peixe < 600:
 			await ctx.send('🎣| Você pegou um peixe **comum** 🐟')
+			fish.pegarpeixe("dados/inventario.json","peixe-c", user)
+	
 		elif peixe > 600 and peixe < 850:
 			await ctx.send('🎣| Você pegou um peixe **incomum** 🐡')
+			fish.pegarpeixe("dados/inventario.json","peixe-u", user)
+
 		elif peixe > 850 and peixe < 990:
 			await ctx.send('🎣| Você pegou um peixe **raro** 🐠')
+			fish.pegarpeixe("dados/inventario.json","peixe-r", user)
+
 		else:
 			await ctx.send('🎣| Você pegou um peixe **lendário** 🦈')
+			fish.pegarpeixe("dados/inventario.json","peixe-l", user)
 
-	#@pescar.error
-	#async def pescar_error(self, ctx, error):
+
+
+	@commands.command(name='inventario', help='mostra seu inventário', aliases=['i'])
+	async def inventario(self, ctx):
+		usuario = ctx.author.id
+		with open('dados/inventario.json','r') as f:
+			data = json.load(f)
+		for casa in data:
+			if casa["id"] == usuario:
+				await ctx.send(f'<@{casa["id"]}> Seu inventário contem:  \n**Comum** 🐟: {casa["peixe-c"]} \n**Incomum** 🐡: {casa["peixe-u"]} \n**Raro** 🐠: {casa["peixe-r"]} \n**Lendário** 🦈: {casa["peixe-l"]}')
+
+
 		
 
 
