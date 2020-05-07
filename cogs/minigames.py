@@ -78,13 +78,14 @@ class joguinhos(commands.Cog):
 		lago = (random.randint(0,250),random.randint(0,250),random.randint(0,250),random.randint(0,250))
 		peixe = lago[0]+lago[1]+lago[2]+lago[3]
 
-		
-		if peixe < 750:
+		if peixe < 250:
+			await ctx.send(f'🎣| Você foi amaldiçoado pelo **! °•★ѕαкє★•°4052** e pescou uma **bota** 👢\n*Obviamente você jogou isso fora...*')
+		elif 700 > peixe > 250:
 			await ctx.send('🎣| Você pegou um peixe **comum** 🐟')
 			fish.pegarpeixe("dados/inventario.json","peixe-c", user)
 			fish.ler("dados/inventario.json")
 	
-		elif peixe > 750 and peixe < 950:
+		elif peixe > 700 and peixe < 950:
 			await ctx.send('🎣| Você pegou um peixe **incomum** 🐡')
 			fish.pegarpeixe("dados/inventario.json","peixe-u", user)
 

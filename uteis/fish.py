@@ -3,7 +3,8 @@ import json
 
 def sobrescrever(arquivo, content):
 	with open(arquivo,'r') as f:
-		dados = json.load(f)#carregando os dados do arquivo e salvando na variavel dados
+		dados = json.load(f)#isso não tem proposito algum mas tá funcionando assim mesmo, 
+		#então não vou arriscar tirar kkkk
 	with open(arquivo, 'w') as f:
 		json.dump(content, f, indent=4)
 	return print("DADO ATUALIZADO!")
