@@ -72,85 +72,97 @@ class joguinhos(commands.Cog):
 
 	@commands.cooldown(1, 6, commands.BucketType.user)
 	@commands.command(name='pescar', help='Pesca virtual xD', aliases=['fish'])
-	async def pescar(self, ctx, parametro="nenhum"):
+	async def pescar(self, ctx):
 		user = ctx.author.id
 		
-		if parametro == "nenhum":
-			fish.existe('dados/inventario.json', user) #checando se o usuario está cadastrado na base de dados
-			lago = (random.randint(0,250),random.randint(0,250),random.randint(0,250),random.randint(0,250))
-			peixe = lago[0]+lago[1]+lago[2]+lago[3]
-			if peixe < 250:
-				await ctx.send(f'🎣| Você pescou um pé da **bota** 👢 do **! °•★ѕαкє★•°4052** ')
-			elif 700 > peixe > 250:
-				await ctx.send('🎣| Você pegou um peixe **comum** 🐟')
-				fish.pegarpeixe("dados/inventario.json","peixe-c", user)
-				fish.ler("dados/inventario.json")
-		
-			elif peixe > 700 and peixe < 950:
-				await ctx.send('🎣| Você pegou um peixe **incomum** 🐡')
-				fish.pegarpeixe("dados/inventario.json","peixe-u", user)
+		fish.existe('dados/inventario.json', user) #checando se o usuario está cadastrado na base de dados
+		lago = (random.randint(0,250),random.randint(0,250),random.randint(0,250),random.randint(0,250))
+		peixe = lago[0]+lago[1]+lago[2]+lago[3]
+		if 1 < peixe < 250:
+			await ctx.send(f'🎣| Você pescou um pé da **bota** 👢 do **! °•★ѕαкє★•°4052** ')
+		elif 700 > peixe > 250:
+			await ctx.send('🎣| Você pegou um peixe **comum** 🐟')
+			fish.pegarpeixe("dados/inventario.json","peixe-c", user)
+			fish.ler("dados/inventario.json")
+	
+		elif peixe > 700 and peixe < 950:
+			await ctx.send('🎣| Você pegou um peixe **incomum** 🐡')
+			fish.pegarpeixe("dados/inventario.json","peixe-u", user)
 
-			elif peixe > 950 and peixe < 995:
-				await ctx.send('🎣| <@{user}> Você pegou um peixe **raro** 🐠 cê é brabo mesmo hein')
-				fish.pegarpeixe("dados/inventario.json","peixe-r", user)
+		elif peixe > 950:
+			await ctx.send('🎣| <@{user}> Você pegou um peixe **raro** 🐠 cê é brabo mesmo hein')
+			fish.pegarpeixe("dados/inventario.json","peixe-r", user)
 
-			else:
-				await ctx.send('🎣| Você pegou um peixe **lendário** 🦈')
-				fish.pegarpeixe("dados/inventario.json","peixe-l", user)
-		elif parametro == "rank" or parametro == "r":
-			a = fish.ler("dados/inventario.json")
-
-			#eu poderia ter usado uma lista, mas por enquanto vou deixar assim.
-			maior = a[0]['peixe-c']
-			maior2 = a[0]['peixe-c']
-			maior3 = a[0]['peixe-c']
-			maior4 = a[0]['peixe-c']
-			maior5 = a[0]['peixe-c']
-			for c in range(0, len(a)):
-				if a[c]['peixe-c'] > maior:
-					maior = a[c]['peixe-c']
-					index = c
-			for c in range(0, len(a)):
-				if a[c]['id'] == a[index]['id']:
-					pass
-				elif a[c]['peixe-c'] > maior2:
-					maior2 = a[c]['peixe-c']
-					index2 = c
-			for c in range(0, len(a)):
-				if a[c]['id'] == a[index]['id'] or a[c]['id'] == a[index2]['id']:
-					pass
-				elif a[c]['peixe-c'] > maior3:
-					maior3 = a[c]['peixe-c']
-					index3 = c
-			for c in range(0, len(a)):
-				if a[c]['id'] == a[index]['id'] or a[c]['id'] == a[index2]['id'] or a[c]['id'] == a[index3]['id']:
-					pass
-				elif a[c]['peixe-c'] > maior4:
-					maior4 = a[c]['peixe-c']
-					index4 = c
-			for c in range(0, len(a)):
-				if a[c]['id'] == a[index]['id'] or a[c]['id'] == a[index2]['id'] or a[c]['id'] == a[index3]['id'] or a[c]['id'] == a[index4]['id']:
-					pass
-				elif a[c]['peixe-c'] > maior5:
-					maior5 = a[c]['peixe-c']
-					index5 = c
-
-			first = await self.client.fetch_user(a[index]['id'])
-			second = await self.client.fetch_user(a[index2]['id'])
-			third = await self.client.fetch_user(a[index3]['id'])
-			fourth = await self.client.fetch_user(a[index4]['id'])
-			fifth = await self.client.fetch_user(a[index5]['id'])
-			await ctx.send(f"**Top pescadores de todo o mundo: **\n🥇| 1º Lugar: {first} **{a[index]['peixe-c']+(a[index2]['peixe-u']*3)}** PTS\n🥈| 2º Lugar: {second} **{a[index2]['peixe-c']+(a[index2]['peixe-u']*3)}** PTS\n🥉| 3º Lugar: {third} **{a[index3]['peixe-c']+(a[index3]['peixe-u']*3)}** PTS\n⭐| 4º Lugar: {fourth} **{a[index4]['peixe-c']+(a[index4]['peixe-u']*3)}** PTS\n⭐| 5º Lugar: {fifth} **{a[index5]['peixe-c']+(a[index5]['peixe-u']*3)}** PTS")
-
+		else:
+			await ctx.send('🎣| Você pegou um peixe **lendário** 🦈')
+			fish.pegarpeixe("dados/inventario.json","peixe-l", user)
+			
 
 	@commands.command(name='inventario', help='mostra seu inventário', aliases=['i'])
-	async def inventario(self, ctx):
-		usuario = ctx.author.id
-		with open('dados/inventario.json','r') as f:
-			data = json.load(f)
-		for casa in data:
-			if casa["id"] == usuario:
-				await ctx.send(f'<@{casa["id"]}> Seu inventário contem:  \n**Comum** 🐟: {casa["peixe-c"]} \n**Incomum** 🐡: {casa["peixe-u"]} \n**Raro** 🐠: {casa["peixe-r"]} \n**Lendário** 🦈: {casa["peixe-l"]}')
+	async def inventario(self, ctx, user=0):
+		if user == 0:
+			usuario = ctx.author.id
+			with open('dados/inventario.json','r') as f:
+				data = json.load(f)
+			for casa in data:
+				if casa["id"] == usuario:
+					await ctx.send(f'<@{casa["id"]}> Seu inventário contem:  \n**Comum** 🐟: {casa["peixe-c"]} \n**Incomum** 🐡: {casa["peixe-u"]} \n**Raro** 🐠: {casa["peixe-r"]} \n**Lendário** 🦈: {casa["peixe-l"]}\nWorth: **{casa["peixe-c"]+(casa["peixe-u"]*3)+(casa["peixe-r"]*5)+(casa["peixe-l"]*10)}** PTS')
+
+		elif user != 0 and ctx.author.id == 122727645132750848:
+			with open('dados/inventario.json','r') as f:
+				data = json.load(f)
+			for casa in data:
+				if casa["id"] == user:
+					await ctx.send(f'Esse inventário contem:  \n**Comum** 🐟: {casa["peixe-c"]} \n**Incomum** 🐡: {casa["peixe-u"]} \n**Raro** 🐠: {casa["peixe-r"]} \n**Lendário** 🦈: {casa["peixe-l"]}\nWorth: **{casa["peixe-c"]+(casa["peixe-u"]*3)+(casa["peixe-r"]*5)+(casa["peixe-l"]*10)}** PTS')
+		else:
+			await ctx.send('Error, are you sure that you are **The Master**?')
+
+	@commands.command(name="rank", help="mostra seu rank de pescador", aliases=["fr"])
+	async def rank(self,ctx):
+		a = fish.ler("dados/inventario.json")
+
+		#eu poderia ter usado uma lista, mas por enquanto vou deixar assim.
+		maior = a[0]['peixe-c']
+		maior2 = a[0]['peixe-c']
+		maior3 = a[0]['peixe-c']
+		maior4 = a[0]['peixe-c']
+		maior5 = a[0]['peixe-c']
+		for c in range(0, len(a)):
+			if a[c]['peixe-c'] > maior:
+				maior = a[c]['peixe-c']
+				index = c
+		for c in range(0, len(a)):
+			if a[c]['id'] == a[index]['id']:
+				pass
+			elif a[c]['peixe-c'] > maior2:
+				maior2 = a[c]['peixe-c']
+				index2 = c
+		for c in range(0, len(a)):
+			if a[c]['id'] == a[index]['id'] or a[c]['id'] == a[index2]['id']:
+				pass
+			elif a[c]['peixe-c'] > maior3:
+				maior3 = a[c]['peixe-c']
+				index3 = c
+		for c in range(0, len(a)):
+			if a[c]['id'] == a[index]['id'] or a[c]['id'] == a[index2]['id'] or a[c]['id'] == a[index3]['id']:
+				pass
+			elif a[c]['peixe-c'] > maior4:
+				maior4 = a[c]['peixe-c']
+				index4 = c
+		for c in range(0, len(a)):
+			if a[c]['id'] == a[index]['id'] or a[c]['id'] == a[index2]['id'] or a[c]['id'] == a[index3]['id'] or a[c]['id'] == a[index4]['id']:
+				pass
+			elif a[c]['peixe-c'] > maior5:
+				maior5 = a[c]['peixe-c']
+				index5 = c
+
+		first = await self.client.fetch_user(a[index]['id'])
+		second = await self.client.fetch_user(a[index2]['id'])
+		third = await self.client.fetch_user(a[index3]['id'])
+		fourth = await self.client.fetch_user(a[index4]['id'])
+		fifth = await self.client.fetch_user(a[index5]['id'])
+
+		await ctx.send(f"**Top pescadores de todo o mundo: **\n🥇| 1º Lugar: {first} **{a[index]['peixe-c']+(a[index2]['peixe-u']*3)}** PTS\n🥈| 2º Lugar: {second} **{a[index2]['peixe-c']+(a[index2]['peixe-u']*3)}** PTS\n🥉| 3º Lugar: {third} **{a[index3]['peixe-c']+(a[index3]['peixe-u']*3)}** PTS\n⭐| 4º Lugar: {fourth} **{a[index4]['peixe-c']+(a[index4]['peixe-u']*3)}** PTS\n⭐| 5º Lugar: {fifth} **{a[index5]['peixe-c']+(a[index5]['peixe-u']*3)}** PTS")
 
 
 def setup(client):
