@@ -35,12 +35,12 @@ class miscelânea(commands.Cog):
 	        await ctx.send('Tainaka é a deusa dos alfaces 🤔')
 	    elif deus.lower() == 'sub':
 	        await ctx.send('Sub é o deus do trabalho voluntário.')
-	    elif deus.lower() == 'gabriel':
+	    elif deus.lower() == 'gabriel' or deus.lower() == 'tor':
 	        await ctx.send('É o deus ou deusa das traps, é também o rei dos disfarces 👌')
 	    elif deus.lower() == 'ado':
 	    	await ctx.send('Ado é o deus dos teste vulgo cobaia')
 	    else:
-	        await ctx.send(f'Sintaxe incorrecta! digite: `{prefixo}gi <deus>`')
+	        await ctx.send(f'Essa é a lista de deuses: Marbas; Tainaka; Gabriel; Sub; Ado.')
 
 
 	#comando que repete a mensagem enviada
