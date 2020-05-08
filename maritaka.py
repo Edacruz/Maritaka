@@ -10,9 +10,8 @@ def is_owner(ctx):
     return ctx.author.id == 122727645132750848 or ctx.author.id == 662861778467684390
 
 
-prefixo = "*"
-build = 'HE12020/05/05'
-client = commands.Bot(command_prefix=prefixo)
+build = 'HE12020/05/08'
+client = commands.Bot(command_prefix="*")
 chave = open('key.txt','r')
 token = chave.read()#aqui vai o tolken do bot
 chave.close
