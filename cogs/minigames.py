@@ -70,7 +70,7 @@ class joguinhos(commands.Cog):
 	        await ctx.send(f'<@{ctx.author.id}>, você perdeu 😭 \nVocê escolheu: **{sua_escolha}**\nResposta certa: **{sekai}**')
 
 
-	@commands.cooldown(1, 61, commands.BucketType.user)
+	@commands.cooldown(1, 6, commands.BucketType.user)
 	@commands.command(name='pescar', help='Pesca virtual xD', aliases=['fish'])
 	async def pescar(self, ctx, parametro="nenhum"):
 		user = ctx.author.id
@@ -99,18 +99,48 @@ class joguinhos(commands.Cog):
 				fish.pegarpeixe("dados/inventario.json","peixe-l", user)
 		elif parametro == "rank" or parametro == "r":
 			a = fish.ler("dados/inventario.json")
+
+			#eu poderia ter usado uma lista, mas por enquanto vou deixar assim.
 			maior = a[0]['peixe-c']
 			maior2 = a[0]['peixe-c']
+			maior3 = a[0]['peixe-c']
+			maior4 = a[0]['peixe-c']
+			maior5 = a[0]['peixe-c']
 			for c in range(0, len(a)):
 				if a[c]['peixe-c'] > maior:
 					maior = a[c]['peixe-c']
 					index = c
 			for c in range(0, len(a)):
-				if a[c]['peixe-c'] > maior2 and a[c]['peixe-c'] != a[index]['peixe-c']:
+				if a[c]['id'] == a[index]['id']:
+					pass
+				elif a[c]['peixe-c'] > maior2:
 					maior2 = a[c]['peixe-c']
 					index2 = c
-			await ctx.send(f"**fds o rank a Tainara é uma deusa**")
-			await ctx.send(f"O maior ~~corno~~ pescador do mundo é o: <@{a[index]['id']}>\nCom {a[index]['peixe-c']+(a[index2]['peixe-u']*3)} Pontos slk\nO segundo maior ~~corno~~ pescador do mundo é o: <@{a[index2]['id']}>\nCom {a[index2]['peixe-c']+(a[index2]['peixe-u']*3)} Pontos slk")
+			for c in range(0, len(a)):
+				if a[c]['id'] == a[index]['id'] or a[c]['id'] == a[index2]['id']:
+					pass
+				elif a[c]['peixe-c'] > maior3:
+					maior3 = a[c]['peixe-c']
+					index3 = c
+			for c in range(0, len(a)):
+				if a[c]['id'] == a[index]['id'] or a[c]['id'] == a[index2]['id'] or a[c]['id'] == a[index3]['id']:
+					pass
+				elif a[c]['peixe-c'] > maior4:
+					maior4 = a[c]['peixe-c']
+					index4 = c
+			for c in range(0, len(a)):
+				if a[c]['id'] == a[index]['id'] or a[c]['id'] == a[index2]['id'] or a[c]['id'] == a[index3]['id'] or a[c]['id'] == a[index4]['id']:
+					pass
+				elif a[c]['peixe-c'] > maior5:
+					maior5 = a[c]['peixe-c']
+					index5 = c
+
+			first = await self.client.fetch_user(a[index]['id'])
+			second = await self.client.fetch_user(a[index2]['id'])
+			third = await self.client.fetch_user(a[index3]['id'])
+			fourth = await self.client.fetch_user(a[index4]['id'])
+			fifth = await self.client.fetch_user(a[index5]['id'])
+			await ctx.send(f"**Top pescadores de todo o mundo: **\n🥇| 1º Lugar: {first} **{a[index]['peixe-c']+(a[index2]['peixe-u']*3)}** PTS\n🥈| 2º Lugar: {second} **{a[index2]['peixe-c']+(a[index2]['peixe-u']*3)}** PTS\n🥉| 3º Lugar: {third} **{a[index3]['peixe-c']+(a[index3]['peixe-u']*3)}** PTS\n⭐| 4º Lugar: {fourth} **{a[index4]['peixe-c']+(a[index4]['peixe-u']*3)}** PTS\n⭐| 5º Lugar: {fifth} **{a[index5]['peixe-c']+(a[index5]['peixe-u']*3)}** PTS")
 
 
 	@commands.command(name='inventario', help='mostra seu inventário', aliases=['i'])

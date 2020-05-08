@@ -7,7 +7,7 @@ def sobrescrever(arquivo, content):
 		#então não vou arriscar tirar kkkk
 	with open(arquivo, 'w') as f:
 		json.dump(content, f, indent=4)
-	return print("DADO ATUALIZADO!")
+	#return print("DADO ATUALIZADO!")
 
 
 def adicionar(arquivo, content):
