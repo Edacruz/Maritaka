@@ -78,18 +78,18 @@ class joguinhos(commands.Cog):
 		fish.existe('dados/inventario.json', user) #checando se o usuario está cadastrado na base de dados
 		lago = (random.randint(0,250),random.randint(0,250),random.randint(0,250),random.randint(0,250))
 		peixe = lago[0]+lago[1]+lago[2]+lago[3]
-		if 1 < peixe < 250:
+		if 1 < peixe < 200:
 			await ctx.send(f'🎣| Você pescou um pé da **bota** 👢 do **! °•★ѕαкє★•°4052** ')
-		elif 700 > peixe > 250:
+		elif 650 > peixe > 200:
 			await ctx.send('🎣| Você pegou um peixe **comum** 🐟')
 			fish.pegarpeixe("dados/inventario.json","peixe-c", user)
 			fish.ler("dados/inventario.json")
 	
-		elif peixe > 700 and peixe < 950:
+		elif peixe > 650 and peixe < 900:
 			await ctx.send('🎣| Você pegou um peixe **incomum** 🐡')
 			fish.pegarpeixe("dados/inventario.json","peixe-u", user)
 
-		elif peixe > 950:
+		elif peixe > 900:
 			await ctx.send('🎣| <@{user}> Você pegou um peixe **raro** 🐠 cê é brabo mesmo hein')
 			fish.pegarpeixe("dados/inventario.json","peixe-r", user)
 
@@ -122,11 +122,16 @@ class joguinhos(commands.Cog):
 		a = fish.ler("dados/inventario.json")
 
 		#eu poderia ter usado uma lista, mas por enquanto vou deixar assim.
+		#me desculpem deuses da programação por essa gambiarra
 		maior = a[0]['peixe-c']
 		maior2 = a[0]['peixe-c']
 		maior3 = a[0]['peixe-c']
 		maior4 = a[0]['peixe-c']
 		maior5 = a[0]['peixe-c']
+		maior6 = a[0]['peixe-c']
+		maior7 = a[0]['peixe-c']
+		maior8 = a[0]['peixe-c']
+		maior9 = a[0]['peixe-c']
 		for c in range(0, len(a)):
 			if a[c]['peixe-c'] > maior:
 				maior = a[c]['peixe-c']
@@ -155,14 +160,42 @@ class joguinhos(commands.Cog):
 			elif a[c]['peixe-c'] > maior5:
 				maior5 = a[c]['peixe-c']
 				index5 = c
+		for c in range(0, len(a)):
+			if a[c]['id'] == a[index]['id'] or a[c]['id'] == a[index2]['id'] or a[c]['id'] == a[index3]['id'] or a[c]['id'] == a[index4]['id'] or a[c]['id'] == a[index5]['id']:
+				pass
+			elif a[c]['peixe-c'] > maior6:
+				maior6 = a[c]['peixe-c']
+				index6 = c
+		for c in range(0, len(a)):
+			if a[c]['id'] == a[index]['id'] or a[c]['id'] == a[index2]['id'] or a[c]['id'] == a[index3]['id'] or a[c]['id'] == a[index4]['id'] or a[c]['id'] == a[index5]['id'] or a[c]['id'] == a[index6]['id']:
+				pass
+			elif a[c]['peixe-c'] > maior7:
+				maior7 = a[c]['peixe-c']
+				index7 = c
+		for c in range(0, len(a)):
+			if a[c]['id'] == a[index]['id'] or a[c]['id'] == a[index2]['id'] or a[c]['id'] == a[index3]['id'] or a[c]['id'] == a[index4]['id'] or a[c]['id'] == a[index5]['id'] or a[c]['id'] == a[index6]['id'] or a[c]['id'] == a[index7]['id']:
+				pass
+			elif a[c]['peixe-c'] > maior8:
+				maior8 = a[c]['peixe-c']
+				index8 = c
+		for c in range(0, len(a)):
+			if a[c]['id'] == a[index]['id'] or a[c]['id'] == a[index2]['id'] or a[c]['id'] == a[index3]['id'] or a[c]['id'] == a[index4]['id'] or a[c]['id'] == a[index5]['id'] or a[c]['id'] == a[index6]['id'] or a[c]['id'] == a[index7]['id'] or a[c]['id'] == a[index8]['id']:
+				pass
+			elif a[c]['peixe-c'] > maior9:
+				maior9 = a[c]['peixe-c']
+				index9 = c
+
 
 		first = await self.client.fetch_user(a[index]['id'])
 		second = await self.client.fetch_user(a[index2]['id'])
 		third = await self.client.fetch_user(a[index3]['id'])
 		fourth = await self.client.fetch_user(a[index4]['id'])
 		fifth = await self.client.fetch_user(a[index5]['id'])
-
-		await ctx.send(f"**Top pescadores de todo o mundo: **\n🥇| 1º Lugar: {first} **{a[index]['peixe-c']+(a[index2]['peixe-u']*3)}** PTS\n🥈| 2º Lugar: {second} **{a[index2]['peixe-c']+(a[index2]['peixe-u']*3)}** PTS\n🥉| 3º Lugar: {third} **{a[index3]['peixe-c']+(a[index3]['peixe-u']*3)}** PTS\n⭐| 4º Lugar: {fourth} **{a[index4]['peixe-c']+(a[index4]['peixe-u']*3)}** PTS\n⭐| 5º Lugar: {fifth} **{a[index5]['peixe-c']+(a[index5]['peixe-u']*3)}** PTS")
+		sixth = await self.client.fetch_user(a[index6]['id'])
+		seventh = await self.client.fetch_user(a[index7]['id'])
+		eighth = await self.client.fetch_user(a[index8]['id'])
+		nineth = await self.client.fetch_user(a[index9]['id'])
+		await ctx.send(f"**Top pescadores de todo o mundo: **\n🥇| 1º Lugar: {first} **{a[index]['peixe-c']+(a[index]['peixe-u']*3)+(a[index]['peixe-r']*5)+(a[index]['peixe-l']*10)}** PTS\n🥈| 2º Lugar: {second} **{a[index2]['peixe-c']+(a[index2]['peixe-u']*3)+(a[index2]['peixe-r']*5)+(a[index2]['peixe-l']*10)}** PTS\n🥉| 3º Lugar: {third} **{a[index3]['peixe-c']+(a[index3]['peixe-u']*3)+(a[index3]['peixe-r']*5)+(a[index3]['peixe-l']*10)}** PTS\n⭐| 4º Lugar: {fourth} **{a[index4]['peixe-c']+(a[index4]['peixe-u']*3)+(a[index4]['peixe-r']*5)+(a[index4]['peixe-l']*10)}** PTS\n⭐| 5º Lugar: {fifth} **{a[index5]['peixe-c']+(a[index5]['peixe-u']*3)+(a[index5]['peixe-r']*5)+(a[index5]['peixe-l']*10)}** PTS\n⭐| 6º Lugar: {sixth} **{a[index6]['peixe-c']+(a[index6]['peixe-u']*3)+(a[index6]['peixe-r']*5)+(a[index6]['peixe-l']*10)}** PTS\n⭐| 7º Lugar: {seventh} **{a[index7]['peixe-c']+(a[index7]['peixe-u']*3)+(a[index7]['peixe-r']*5)+(a[index7]['peixe-l']*10)}** PTS\n⭐| 8º Lugar: {eighth} **{a[index8]['peixe-c']+(a[index8]['peixe-u']*3)+(a[index8]['peixe-r']*5)+(a[index8]['peixe-l']*10)}** PTS\n⭐| 9º Lugar: {nineth} **{a[index9]['peixe-c']+(a[index9]['peixe-u']*3)+(a[index9]['peixe-r']*5)+(a[index9]['peixe-l']*10)}** PTS")
 
 
 def setup(client):

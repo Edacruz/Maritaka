@@ -81,7 +81,10 @@ async def on_command_error(ctx, error):
         await ctx.send('Você não tem permissão para usar esse comando!')
         
     elif isinstance(error, commands.CommandOnCooldown):
-            await ctx.send(f'<@{ctx.author.id}>, comando em cooldown, espere {error.retry_after:.0f} segundos.')
+        await ctx.send(f'<@{ctx.author.id}>, comando em cooldown, espere {error.retry_after:.0f} segundos.')
+    
+    elif isinstance(error, commands.errors.CheckFailure):
+        await ctx.send('Error, are you sure that you are **The Master**?')
     else:
         raise error
 
