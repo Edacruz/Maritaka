@@ -11,7 +11,7 @@ def is_owner(ctx):
 
 
 build = 'HE12020/05/08'
-client = commands.Bot(command_prefix="*")
+client = commands.Bot(command_prefix="m!")
 chave = open('key.txt','r')
 token = chave.read()#aqui vai o tolken do bot
 chave.close
@@ -59,7 +59,7 @@ async def on_message(message):
     marcar = message.author.id
 
     if '660353273659916299' in msg and message.author != client.user:
-        await canal.send(f'Meu prefixo neste servidor é {prefixo}, <@{marcar}>')
+        await canal.send(f'Precisando de ajuda? use **m!help** p/ ver meus comandos, <@{marcar}>')
 
     await client.process_commands(message)#sem esta linha os "comandos" não funcionam
 
@@ -75,6 +75,7 @@ async def on_command_error(ctx, error):
         await ctx.send('Por favor informe os parâmetro necessários!') 
 
     elif isinstance(error, commands.errors.CommandNotFound):
+        await ctx.send('Esse comando não existe.')
         pass
 
     elif isinstance(error, commands.errors.MissingPermissions):
