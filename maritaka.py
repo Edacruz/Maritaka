@@ -58,7 +58,7 @@ async def on_message(message):
     msg = message.content
     marcar = message.author.id
 
-    if '660353273659916299' in msg and message.author != client.user:
+    if '<@660353273659916299>' in msg and message.author != client.user:
         await canal.send(f'Precisando de ajuda? use **m!help** p/ ver meus comandos, <@{marcar}>')
 
     await client.process_commands(message)#sem esta linha os "comandos" não funcionam
