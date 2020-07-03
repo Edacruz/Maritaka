@@ -25,20 +25,24 @@ class moderação(commands.Cog):
 
 
     #kick
-    @commands.has_permissions(manage_messages=True)
+    @commands.has_permissions(kick_members=True)
     @commands.command(name='kick', help='Expulsa um usuário do servidor.', aliases=['expulsar'])
     async def kick(self, ctx, member : discord.Member, *, motivo=None):
         await member.kick(reason=motivo)
         await ctx.send(f'{member} foi expulso.\nMotivo: {motivo}')
     #ban
-    @commands.has_permissions(manage_messages=True)
+    @commands.has_permissions(ban_members=True)
     @commands.command(name='ban', help='Bane um usuário do servidor.', aliases=['banir'])
     async def ban(self, ctx, member : discord.Member, *, motivo=None):
-        await member.ban(reason=motivo)
-        await ctx.send(f'{member} foi banido.\nMotivo: {motivo}')
+        try:
+            await member.ban(reason=motivo) 
+        except discord.Forbidden:
+            await ctx.send(f'Você precisa ter permissão para `banir usuários` para executar este comando. ')
+        else:
+            await ctx.send(f'{member} foi banido.\nMotivo: {motivo}')
 
     #unban
-    @commands.has_permissions(manage_messages=True)
+    @commands.has_permissions(ban_members=True)
     @commands.command(name='unban', help='Desbane um usuário do servidor.')
     async def unban(self, ctx, *, member):
         usuarios_banidos = await ctx.guild.bans()
