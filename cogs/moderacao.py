@@ -28,8 +28,12 @@ class moderação(commands.Cog):
     @commands.has_permissions(kick_members=True)
     @commands.command(name='kick', help='Expulsa um usuário do servidor.', aliases=['expulsar'])
     async def kick(self, ctx, member : discord.Member, *, motivo=None):
-        await member.kick(reason=motivo)
-        await ctx.send(f'{member} foi expulso.\nMotivo: {motivo}')
+        try:
+            await member.kick(reason=motivo)
+        except discord.Forbidden:
+            await ctx.send(f'Você precisa ter a permissão `expulsar usuários` para executar este comando. ')
+        else:
+            await ctx.send(f'{member} foi expulso.\nMotivo: {motivo}')
     #ban
     @commands.has_permissions(ban_members=True)
     @commands.command(name='ban', help='Bane um usuário do servidor.', aliases=['banir'])
@@ -37,7 +41,7 @@ class moderação(commands.Cog):
         try:
             await member.ban(reason=motivo) 
         except discord.Forbidden:
-            await ctx.send(f'Você precisa ter permissão para `banir usuários` para executar este comando. ')
+            await ctx.send(f'Você precisa ter a permissão `banir usuários` para executar este comando. ')
         else:
             await ctx.send(f'{member} foi banido.\nMotivo: {motivo}')
 
@@ -47,12 +51,16 @@ class moderação(commands.Cog):
     async def unban(self, ctx, *, member):
         usuarios_banidos = await ctx.guild.bans()
         member_name, member_discriminator = member.split('#')
-        for ban_entry in usuarios_banidos:
-            user = ban_entry.user
-            if(user.name, user.discriminator) == (member_name, member_discriminator):
-                await ctx.guild.unban(user)
-                await ctx.send(f'{user.name}#{user.discriminator} foi desbanido!')
-                return
+        try:
+            for ban_entry in usuarios_banidos:
+                user = ban_entry.user
+                if(user.name, user.discriminator) == (member_name, member_discriminator):
+                    await ctx.guild.unban(user)
+        except discord.Forbidden:
+            await ctx.send(f'Você precisa ter a permissão `banir usuários` para executar este comando. ')
+        else:
+            await ctx.send(f'{user.name}#{user.discriminator} foi desbanido!')
+            return
 
 
 def setup(client):
