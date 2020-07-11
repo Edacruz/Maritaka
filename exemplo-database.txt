@@ -1,0 +1,8 @@
+CREATE TABLE inventario(
+    Id INTEGER,
+    PeixeC INTEGER,
+    PeixeU INTEGER,
+    PeixeR INTEGER,
+    PeixeL INTEGER,
+    Worth INTEGER, 
+    Garbage INTEGER)
