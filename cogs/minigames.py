@@ -71,78 +71,77 @@ class joguinhos(commands.Cog):
 
 
 	@commands.cooldown(1, 4, commands.BucketType.user)
-	@commands.command(name='pescar', help='Pesca virtual xD', aliases=['fish'])
+	@commands.group(name='pesca', help='Pesca virtual xD', aliases=['fish','f'])
 	async def pescar(self, ctx):
-		user = ctx.author.id
-		peixe = random.randint(0,1000)
-		pt = 0
-
-		if 1 < peixe < 150:
-			await ctx.send(f'🎣| Você pegou a **bota** 👢 do **! °•★ѕαкє★•°4052**')
-			pt = 5
-
-		elif 650 > peixe > 150:
-			await ctx.send(f'🎣| Você pegou um peixe **comum** 🐟')
-			pt = 1
-			
-		elif peixe > 650 and peixe < 950:
-			await ctx.send(f'🎣| Você pegou um peixe **incomum** 🐡')
-			pt = 2
-			
-		elif 1000 > peixe > 950:
-			await ctx.send(f'🎣| <@{user}> Você pegou um peixe **raro** 🐠 cê é brabo mesmo hein')
-			pt = 3
-			
-		else:
-			await ctx.send(f'🎣| <@{user}> Você pegou um peixe **lendário** 🦈 {peixe}')
-			pt = 4
-
-		#conectando ao banco de dados:
-		db = sqlite3.connect('main.sqlite')
-		cursor = db.cursor()
-		cursor.execute(f'SELECT * FROM inventario WHERE Id = {user}')
-		result = cursor.fetchone()
-
-		if result is None:#se o usuario ainda não estiver na base de dados
-			print('NONE')
-			sql = ('INSERT INTO inventario(Id, PeixeC,PeixeU,PeixeR,PeixeL,Worth) VALUES(?,?,?,?,?,?)')
-			val = (user,0,0,0,0,0)
-		elif result is not None:
-			if pt == 1:
-				sql = ("UPDATE inventario SET PeixeC = PeixeC+? WHERE Id = ?")
-				val = (1,user)
-			elif pt == 2:
-				sql = ("UPDATE inventario SET PeixeU = PeixeU+?, Worth = Worth+? WHERE Id = ?")
-				val = (1,3,user)
-			elif pt == 3:
-				sql = ("UPDATE inventario SET PeixeR = PeixeR+?, Worth = Worth+? WHERE Id = ?")
-				val = (1,10,user)
-			elif pt == 4:
-				sql = ("UPDATE inventario SET PeixeL = PeixeL+?, Worth = Worth+? WHERE Id = ?")
-				val = (1,50,user)
-			elif pt == 5:
-				sql = ("UPDATE inventario SET Garbage = Garbage+?, Worth = Worth+? WHERE Id = ?")
-				val = (1,-2,user)
-			
-		cursor.execute(sql,val)
-		db.commit()
-		cursor.close()
-		db.close()
-			
-
-	@commands.command(name='inventario', help='mostra seu inventário', aliases=['i','inv'])
-	async def inventario(self, ctx):
+		if ctx.invoked_subcommand is None:
 			user = ctx.author.id
+			peixe = random.randint(0,1000)
+			pt = 0
+
+			if 1 < peixe < 150:
+				await ctx.send(f'🎣| Você pegou a **bota** 👢 do **! °•★ѕαкє★•°4052**')
+				pt = 5
+
+			elif 650 > peixe > 150:
+				await ctx.send(f'🎣| Você pegou um peixe **comum** 🐟')
+				pt = 1
+				
+			elif peixe > 650 and peixe < 950:
+				await ctx.send(f'🎣| Você pegou um peixe **incomum** 🐡')
+				pt = 2
+				
+			elif 1000 > peixe > 950:
+				await ctx.send(f'🎣| <@{user}> Você pegou um peixe **raro** 🐠 cê é brabo mesmo hein')
+				pt = 3
+				
+			else:
+				await ctx.send(f'🎣| <@{user}> Você pegou um peixe **lendário** 🦈 {peixe}')
+				pt = 4
+
 
 			#conectando ao banco de dados:
 			db = sqlite3.connect('main.sqlite')
 			cursor = db.cursor()
 			cursor.execute(f'SELECT * FROM inventario WHERE Id = {user}')
 			result = cursor.fetchone()
-			await ctx.send(f'Seu inventário de peixes:\n**Comum** 🐟: {result[1]}\n**Incomum** 🐡: {result[2]}\n**Raro** 🐠: {result[3]}\n**Lendário** 🦈: {result[4]}\n**Garbage** 💩: {result[6]}\nWorth: **{result[5]} pontos**.\n<@{ctx.author.id}> ')
 
+			if result is None:#se o usuario ainda não estiver na base de dados
+				print('NONE')
+				sql = ('INSERT INTO inventario(Id, PeixeC,PeixeU,PeixeR,PeixeL,Worth) VALUES(?,?,?,?,?,?)')
+				val = (user,0,0,0,0,0)
+			elif result is not None:
+				if pt == 1:
+					sql = ("UPDATE inventario SET PeixeC = PeixeC+? WHERE Id = ?")
+					val = (1,user)
+				elif pt == 2:
+					sql = ("UPDATE inventario SET PeixeU = PeixeU+?, Worth = Worth+? WHERE Id = ?")
+					val = (1,3,user)
+				elif pt == 3:
+					sql = ("UPDATE inventario SET PeixeR = PeixeR+?, Worth = Worth+? WHERE Id = ?")
+					val = (1,10,user)
+				elif pt == 4:
+					sql = ("UPDATE inventario SET PeixeL = PeixeL+?, Worth = Worth+? WHERE Id = ?")
+					val = (1,50,user)
+				elif pt == 5:
+					sql = ("UPDATE inventario SET Garbage = Garbage+?, Worth = Worth+? WHERE Id = ?")
+					val = (1,-2,user)
+				
+			cursor.execute(sql,val)
+			db.commit()
+			cursor.close()
+			db.close()
+			
+	@pescar.command(name='inventario', help='mostra seu inventário', aliases=['i','inv'])
+	async def inventario(self, ctx):
+		user = ctx.author.id
+		#conectando ao banco de dados:
+		db = sqlite3.connect('main.sqlite')
+		cursor = db.cursor()
+		cursor.execute(f'SELECT * FROM inventario WHERE Id = {user}')
+		result = cursor.fetchone()
+		await ctx.send(f'Seu inventário de peixes:\n**Comum** 🐟: {result[1]}\n**Incomum** 🐡: {result[2]}\n**Raro** 🐠: {result[3]}\n**Lendário** 🦈: {result[4]}\n**Garbage** 💩: {result[6]}\n**Worth** ⭐: {result[5]} pontos.\n<@{ctx.author.id}> ')
 
-	@commands.command(name="rank", help="mostra os 10 maiores pescadores", aliases=["fr"])
+	@pescar.command(name="rank", help="mostra os 10 maiores pescadores", aliases=["r"])
 	async def rank(self,ctx):
 		#conectando ao banco de dados:
 		db = sqlite3.connect('main.sqlite')
@@ -150,7 +149,7 @@ class joguinhos(commands.Cog):
 		cursor.execute(f'SELECT Id, Worth FROM inventario ORDER BY Worth DESC LIMIT 10')
 		result = cursor.fetchall()
 		lst = len(result)
-		a = 'Top pescadores:\n'
+		rank = '**Top pescadores:**\n'
 		for i in range(0,lst):
 			if i == 0:
 				colocacao = '🥇'
@@ -161,8 +160,11 @@ class joguinhos(commands.Cog):
 			else:
 				colocacao = '⭐'
 
-			a += (f'{colocacao}| {i+1}º Lugar: {await self.client.fetch_user(result[i][0])} Worth: **{result[i][1]} Pontos**\n')
-		await ctx.send(a)
+			rank += (f'{colocacao}| {i+1}º Lugar: {await self.client.fetch_user(result[i][0])} Worth: **{result[i][1]} Pontos**\n')
+		await ctx.send(rank)
+
+	
+		
 
 def setup(client):
 	client.add_cog(joguinhos(client))
