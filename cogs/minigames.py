@@ -131,15 +131,15 @@ class joguinhos(commands.Cog):
 			
 
 	@commands.command(name='inventario', help='mostra seu inventário', aliases=['i','inv'])
-	async def inventario(self, ctx, user=0):
-		user = ctx.author.id
+	async def inventario(self, ctx):
+			user = ctx.author.id
 
-		#conectando ao banco de dados:
-		db = sqlite3.connect('main.sqlite')
-		cursor = db.cursor()
-		cursor.execute(f'SELECT * FROM inventario WHERE Id = {user}')
-		result = cursor.fetchone()
-		await ctx.send(f'Seu inventário de peixes:\n**Comum** 🐟: {result[1]}\n**Incomum** 🐡: {result[2]}\n**Raro** 🐠: {result[3]}\n**Lendário** 🦈:{result[4]}\n**Garbage** 💩: {result[6]}\nWorth: **{result[5]} pontos**.\n<@{user}> ')
+			#conectando ao banco de dados:
+			db = sqlite3.connect('main.sqlite')
+			cursor = db.cursor()
+			cursor.execute(f'SELECT * FROM inventario WHERE Id = {user}')
+			result = cursor.fetchone()
+			await ctx.send(f'Seu inventário de peixes:\n**Comum** 🐟: {result[1]}\n**Incomum** 🐡: {result[2]}\n**Raro** 🐠: {result[3]}\n**Lendário** 🦈: {result[4]}\n**Garbage** 💩: {result[6]}\nWorth: **{result[5]} pontos**.\n<@{ctx.author.id}> ')
 
 
 	@commands.command(name="rank", help="mostra os 10 maiores pescadores", aliases=["fr"])
@@ -149,7 +149,20 @@ class joguinhos(commands.Cog):
 		cursor = db.cursor()
 		cursor.execute(f'SELECT Id, Worth FROM inventario ORDER BY Worth DESC LIMIT 10')
 		result = cursor.fetchall()
-		await ctx.send(result)
+		lst = len(result)
+		a = 'Top pescadores:\n'
+		for i in range(0,lst):
+			if i == 0:
+				colocacao = '🥇'
+			elif i == 1:
+				colocacao = '🥈'
+			elif i == 2:
+				colocacao = '🥉'
+			else:
+				colocacao = '⭐'
+
+			a += (f'{colocacao}| {i+1}º Lugar: {await self.client.fetch_user(result[i][0])} Worth: **{result[i][1]} Pontos**\n')
+		await ctx.send(a)
 
 def setup(client):
 	client.add_cog(joguinhos(client))
