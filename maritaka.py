@@ -11,7 +11,7 @@ def is_owner(ctx):
 
 
 build = 'HE12020/05/08'
-client = commands.Bot(command_prefix="m!")
+client = commands.Bot(command_prefix="m!", case_insensitive=True)
 chave = open('key.txt','r')
 token = chave.read()#aqui vai o tolken do bot
 chave.close
@@ -19,13 +19,13 @@ chave.close
 #imprimindo status do bot
 @client.event
 async def on_ready():
-        print('=-'*10,'.:ONLINE:.','-='*10)
-        print(client.user.name,'está online!')
-        print('Cliente user: ',client.user)
-        print('Cliente user id: ',client.user.id)
-        print('=-'*10,'xxFIMxxx','-='*10)
-        #setando o status online do bot. online = online; não perturbe = dnd; ausente = idle;
-        await client.change_presence(status=discord.Status.dnd, activity=discord.Game('Fazendo chá.'))
+    print('=-'*10,'.:ONLINE:.','-='*10)
+    print(client.user.name,'está online!')
+    print('Cliente user: ',client.user)
+    print('Cliente user id: ',client.user.id)
+    print('=-'*10,'xxFIMxxx','-='*10)
+    #setando o status online do bot. online = online; não perturbe = dnd; ausente = idle;
+    await client.change_presence(status=discord.Status.online, activity=discord.Game('Festa do chá.'))
 
 
 @commands.check(is_owner)
