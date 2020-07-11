@@ -70,47 +70,38 @@ class joguinhos(commands.Cog):
 	        await ctx.send(f'<@{ctx.author.id}>, você perdeu 😭 \nVocê escolheu: **{sua_escolha}**\nResposta certa: **{sekai}**')
 
 
-	@commands.cooldown(1, 1, commands.BucketType.user)
+	@commands.cooldown(1, 4, commands.BucketType.user)
 	@commands.command(name='pescar', help='Pesca virtual xD', aliases=['fish'])
 	async def pescar(self, ctx):
 		user = ctx.author.id
 		peixe = random.randint(0,1000)
 		pt = 0
 
-
 		if 1 < peixe < 150:
 			await ctx.send(f'🎣| Você pegou a **bota** 👢 do **! °•★ѕαкє★•°4052**')
 			pt = 5
-
 
 		elif 650 > peixe > 150:
 			await ctx.send(f'🎣| Você pegou um peixe **comum** 🐟')
 			pt = 1
 			
-	
 		elif peixe > 650 and peixe < 950:
 			await ctx.send(f'🎣| Você pegou um peixe **incomum** 🐡')
 			pt = 2
 			
-
 		elif 1000 > peixe > 950:
 			await ctx.send(f'🎣| <@{user}> Você pegou um peixe **raro** 🐠 cê é brabo mesmo hein')
 			pt = 3
 			
-
 		else:
 			await ctx.send(f'🎣| <@{user}> Você pegou um peixe **lendário** 🦈 {peixe}')
 			pt = 4
-
-
 
 		#conectando ao banco de dados:
 		db = sqlite3.connect('main.sqlite')
 		cursor = db.cursor()
 		cursor.execute(f'SELECT * FROM inventario WHERE Id = {user}')
 		result = cursor.fetchone()
-
-
 
 		if result is None:#se o usuario ainda não estiver na base de dados
 			print('NONE')
@@ -148,8 +139,7 @@ class joguinhos(commands.Cog):
 		cursor = db.cursor()
 		cursor.execute(f'SELECT * FROM inventario WHERE Id = {user}')
 		result = cursor.fetchone()
-		await ctx.send(f'Seu inventário de peixes:\n**Comum** 🐟: {result[1]}\n**Incomum** 🐡: {result[2]}\n**Raro(s)** 🐠: {result[3]}\n**Lendário(s)** 🦈:{result[4]}\n**Garbage** 💩: {result[6]}\nWorth: **{result[5]} pontos**.\n<@{user}> ')
-
+		await ctx.send(f'Seu inventário de peixes:\n**Comum** 🐟: {result[1]}\n**Incomum** 🐡: {result[2]}\n**Raro** 🐠: {result[3]}\n**Lendário** 🦈:{result[4]}\n**Garbage** 💩: {result[6]}\nWorth: **{result[5]} pontos**.\n<@{user}> ')
 
 
 	@commands.command(name="rank", help="mostra os 10 maiores pescadores", aliases=["fr"])
