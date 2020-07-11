@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import random
 import json
-from uteis import fish
+import sqlite3
 
 
 class joguinhos(commands.Cog):
@@ -70,133 +70,96 @@ class joguinhos(commands.Cog):
 	        await ctx.send(f'<@{ctx.author.id}>, você perdeu 😭 \nVocê escolheu: **{sua_escolha}**\nResposta certa: **{sekai}**')
 
 
-	@commands.cooldown(1, 4, commands.BucketType.user)
+	@commands.cooldown(1, 1, commands.BucketType.user)
 	@commands.command(name='pescar', help='Pesca virtual xD', aliases=['fish'])
 	async def pescar(self, ctx):
 		user = ctx.author.id
-		
-		fish.existe('dados/inventario.json', user) #checando se o usuario está cadastrado na base de dados
-		lago = (random.randint(0,250),random.randint(0,250),random.randint(0,250),random.randint(0,250))
-		peixe = lago[0]+lago[1]+lago[2]+lago[3]
-		if 1 < peixe < 200:
-			await ctx.send(f'🎣| <@{user}> Você pegou um peixe **lendário** 🦈\n brinks, era só a **bota** 👢 do **! °•★ѕαкє★•°4052** mesmo. ')
-		elif 650 > peixe > 200:
-			await ctx.send(f'🎣| <@{user}> Você pegou um peixe **comum** 🐟')
-			fish.pegarpeixe("dados/inventario.json","peixe-c", user)
-			fish.ler("dados/inventario.json")
-	
-		elif peixe > 650 and peixe < 900:
-			await ctx.send(f'🎣| <@{user}> Você pegou um peixe **incomum** 🐡')
-			fish.pegarpeixe("dados/inventario.json","peixe-u", user)
+		peixe = random.randint(0,1000)
+		pt = 0
 
-		elif peixe > 900:
+
+		if 1 < peixe < 150:
+			await ctx.send(f'🎣| Você pegou a **bota** 👢 do **! °•★ѕαкє★•°4052**')
+			pt = 5
+
+
+		elif 650 > peixe > 150:
+			await ctx.send(f'🎣| Você pegou um peixe **comum** 🐟')
+			pt = 1
+			
+	
+		elif peixe > 650 and peixe < 950:
+			await ctx.send(f'🎣| Você pegou um peixe **incomum** 🐡')
+			pt = 2
+			
+
+		elif 1000 > peixe > 950:
 			await ctx.send(f'🎣| <@{user}> Você pegou um peixe **raro** 🐠 cê é brabo mesmo hein')
-			fish.pegarpeixe("dados/inventario.json","peixe-r", user)
+			pt = 3
+			
 
 		else:
-			await ctx.send('🎣| Você pegou um peixe **lendário** 🦈')
-			fish.pegarpeixe("dados/inventario.json","peixe-l", user)
+			await ctx.send(f'🎣| <@{user}> Você pegou um peixe **lendário** 🦈 {peixe}')
+			pt = 4
+
+
+
+		#conectando ao banco de dados:
+		db = sqlite3.connect('main.sqlite')
+		cursor = db.cursor()
+		cursor.execute(f'SELECT * FROM inventario WHERE Id = {user}')
+		result = cursor.fetchone()
+
+
+
+		if result is None:#se o usuario ainda não estiver na base de dados
+			print('NONE')
+			sql = ('INSERT INTO inventario(Id, PeixeC,PeixeU,PeixeR,PeixeL,Worth) VALUES(?,?,?,?,?,?)')
+			val = (user,0,0,0,0,0)
+		elif result is not None:
+			if pt == 1:
+				sql = ("UPDATE inventario SET PeixeC = PeixeC+? WHERE Id = ?")
+				val = (1,user)
+			elif pt == 2:
+				sql = ("UPDATE inventario SET PeixeU = PeixeU+?, Worth = Worth+? WHERE Id = ?")
+				val = (1,3,user)
+			elif pt == 3:
+				sql = ("UPDATE inventario SET PeixeR = PeixeR+?, Worth = Worth+? WHERE Id = ?")
+				val = (1,10,user)
+			elif pt == 4:
+				sql = ("UPDATE inventario SET PeixeL = PeixeL+?, Worth = Worth+? WHERE Id = ?")
+				val = (1,50,user)
+			elif pt == 5:
+				sql = ("UPDATE inventario SET Garbage = Garbage+?, Worth = Worth+? WHERE Id = ?")
+				val = (1,-2,user)
+			
+		cursor.execute(sql,val)
+		db.commit()
+		cursor.close()
+		db.close()
 			
 
 	@commands.command(name='inventario', help='mostra seu inventário', aliases=['i','inv'])
 	async def inventario(self, ctx, user=0):
-		if user == 0:
-			usuario = ctx.author.id
-			with open('dados/inventario.json','r') as f:
-				data = json.load(f)
-			for casa in data:
-				if casa["id"] == usuario:
-					await ctx.send(f'<@{casa["id"]}> Seu inventário contem:  \n**Comum** 🐟: {casa["peixe-c"]} \n**Incomum** 🐡: {casa["peixe-u"]} \n**Raro** 🐠: {casa["peixe-r"]} \n**Lendário** 🦈: {casa["peixe-l"]}\nWorth: **{casa["peixe-c"]+(casa["peixe-u"]*3)+(casa["peixe-r"]*5)+(casa["peixe-l"]*10)}** PTS')
+		user = ctx.author.id
 
-		elif user != 0 and ctx.author.id == 122727645132750848 or 662861778467684390:
-			with open('dados/inventario.json','r') as f:
-				data = json.load(f)
-			for casa in data:
-				if casa["id"] == user:
-					await ctx.send(f'Esse inventário contem:  \n**Comum** 🐟: {casa["peixe-c"]} \n**Incomum** 🐡: {casa["peixe-u"]} \n**Raro** 🐠: {casa["peixe-r"]} \n**Lendário** 🦈: {casa["peixe-l"]}\nWorth: **{casa["peixe-c"]+(casa["peixe-u"]*3)+(casa["peixe-r"]*5)+(casa["peixe-l"]*10)}** PTS')
-		else:
-			await ctx.send('Not today')
+		#conectando ao banco de dados:
+		db = sqlite3.connect('main.sqlite')
+		cursor = db.cursor()
+		cursor.execute(f'SELECT * FROM inventario WHERE Id = {user}')
+		result = cursor.fetchone()
+		await ctx.send(f'Seu inventário de peixes:\n**Comum** 🐟: {result[1]}\n**Incomum** 🐡: {result[2]}\n**Raro(s)** 🐠: {result[3]}\n**Lendário(s)** 🦈:{result[4]}\n**Garbage** 💩: {result[6]}\nWorth: **{result[5]} pontos**.\n<@{user}> ')
 
-	@commands.command(name="rank", help="mostra seu rank de pescador", aliases=["fr"])
+
+
+	@commands.command(name="rank", help="mostra os 10 maiores pescadores", aliases=["fr"])
 	async def rank(self,ctx):
-		a = fish.ler("dados/inventario.json")
-
-		#eu poderia ter usado uma lista, mas por enquanto vou deixar assim.
-		#me desculpem deuses da programação por essa gambiarra
-		maior = a[0]['peixe-c']
-		maior2 = a[0]['peixe-c']
-		maior3 = a[0]['peixe-c']
-		maior4 = a[0]['peixe-c']
-		maior5 = a[0]['peixe-c']
-		maior6 = a[0]['peixe-c']
-		maior7 = a[0]['peixe-c']
-		maior8 = a[0]['peixe-c']
-		maior9 = a[0]['peixe-c']
-		for c in range(0, len(a)):
-			if a[c]['peixe-c'] > maior:
-				maior = a[c]['peixe-c']
-				index = c
-		for c in range(0, len(a)):
-			if a[c]['id'] == a[index]['id']:
-				pass
-			elif a[c]['peixe-c'] > maior2:
-				maior2 = a[c]['peixe-c']
-				index2 = c
-		for c in range(0, len(a)):
-			if a[c]['id'] == a[index]['id'] or a[c]['id'] == a[index2]['id']:
-				pass
-			elif a[c]['peixe-c'] > maior3:
-				maior3 = a[c]['peixe-c']
-				index3 = c
-		for c in range(0, len(a)):
-			if a[c]['id'] == a[index]['id'] or a[c]['id'] == a[index2]['id'] or a[c]['id'] == a[index3]['id']:
-				pass
-			elif a[c]['peixe-c'] > maior4:
-				maior4 = a[c]['peixe-c']
-				index4 = c
-		for c in range(0, len(a)):
-			if a[c]['id'] == a[index]['id'] or a[c]['id'] == a[index2]['id'] or a[c]['id'] == a[index3]['id'] or a[c]['id'] == a[index4]['id']:
-				pass
-			elif a[c]['peixe-c'] > maior5:
-				maior5 = a[c]['peixe-c']
-				index5 = c
-		for c in range(0, len(a)):
-			if a[c]['id'] == a[index]['id'] or a[c]['id'] == a[index2]['id'] or a[c]['id'] == a[index3]['id'] or a[c]['id'] == a[index4]['id'] or a[c]['id'] == a[index5]['id']:
-				pass
-			elif a[c]['peixe-c'] > maior6:
-				maior6 = a[c]['peixe-c']
-				index6 = c
-		for c in range(0, len(a)):
-			if a[c]['id'] == a[index]['id'] or a[c]['id'] == a[index2]['id'] or a[c]['id'] == a[index3]['id'] or a[c]['id'] == a[index4]['id'] or a[c]['id'] == a[index5]['id'] or a[c]['id'] == a[index6]['id']:
-				pass
-			elif a[c]['peixe-c'] > maior7:
-				maior7 = a[c]['peixe-c']
-				index7 = c
-		for c in range(0, len(a)):
-			if a[c]['id'] == a[index]['id'] or a[c]['id'] == a[index2]['id'] or a[c]['id'] == a[index3]['id'] or a[c]['id'] == a[index4]['id'] or a[c]['id'] == a[index5]['id'] or a[c]['id'] == a[index6]['id'] or a[c]['id'] == a[index7]['id']:
-				pass
-			elif a[c]['peixe-c'] > maior8:
-				maior8 = a[c]['peixe-c']
-				index8 = c
-		for c in range(0, len(a)):
-			if a[c]['id'] == a[index]['id'] or a[c]['id'] == a[index2]['id'] or a[c]['id'] == a[index3]['id'] or a[c]['id'] == a[index4]['id'] or a[c]['id'] == a[index5]['id'] or a[c]['id'] == a[index6]['id'] or a[c]['id'] == a[index7]['id'] or a[c]['id'] == a[index8]['id']:
-				pass
-			elif a[c]['peixe-c'] > maior9:
-				maior9 = a[c]['peixe-c']
-				index9 = c
-
-
-		first = await self.client.fetch_user(a[index]['id'])
-		second = await self.client.fetch_user(a[index2]['id'])
-		third = await self.client.fetch_user(a[index3]['id'])
-		fourth = await self.client.fetch_user(a[index4]['id'])
-		fifth = await self.client.fetch_user(a[index5]['id'])
-		sixth = await self.client.fetch_user(a[index6]['id'])
-		seventh = await self.client.fetch_user(a[index7]['id'])
-		eighth = await self.client.fetch_user(a[index8]['id'])
-		nineth = await self.client.fetch_user(a[index9]['id'])
-		await ctx.send(f"**Top pescadores de todo o mundo: **\n🥇| 1º Lugar: {first} **{a[index]['peixe-c']+(a[index]['peixe-u']*3)+(a[index]['peixe-r']*5)+(a[index]['peixe-l']*10)}** PTS\n🥈| 2º Lugar: {second} **{a[index2]['peixe-c']+(a[index2]['peixe-u']*3)+(a[index2]['peixe-r']*5)+(a[index2]['peixe-l']*10)}** PTS\n🥉| 3º Lugar: {third} **{a[index3]['peixe-c']+(a[index3]['peixe-u']*3)+(a[index3]['peixe-r']*5)+(a[index3]['peixe-l']*10)}** PTS\n⭐| 4º Lugar: {fourth} **{a[index4]['peixe-c']+(a[index4]['peixe-u']*3)+(a[index4]['peixe-r']*5)+(a[index4]['peixe-l']*10)}** PTS\n⭐| 5º Lugar: {fifth} **{a[index5]['peixe-c']+(a[index5]['peixe-u']*3)+(a[index5]['peixe-r']*5)+(a[index5]['peixe-l']*10)}** PTS\n⭐| 6º Lugar: {sixth} **{a[index6]['peixe-c']+(a[index6]['peixe-u']*3)+(a[index6]['peixe-r']*5)+(a[index6]['peixe-l']*10)}** PTS\n⭐| 7º Lugar: {seventh} **{a[index7]['peixe-c']+(a[index7]['peixe-u']*3)+(a[index7]['peixe-r']*5)+(a[index7]['peixe-l']*10)}** PTS\n⭐| 8º Lugar: {eighth} **{a[index8]['peixe-c']+(a[index8]['peixe-u']*3)+(a[index8]['peixe-r']*5)+(a[index8]['peixe-l']*10)}** PTS\n⭐| 9º Lugar: {nineth} **{a[index9]['peixe-c']+(a[index9]['peixe-u']*3)+(a[index9]['peixe-r']*5)+(a[index9]['peixe-l']*10)}** PTS")
-
+		#conectando ao banco de dados:
+		db = sqlite3.connect('main.sqlite')
+		cursor = db.cursor()
+		cursor.execute(f'SELECT Id, Worth FROM inventario ORDER BY Worth DESC LIMIT 10')
+		result = cursor.fetchall()
+		await ctx.send(result)
 
 def setup(client):
 	client.add_cog(joguinhos(client))

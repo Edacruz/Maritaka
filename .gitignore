@@ -3,3 +3,4 @@ key.txt
 *.pyc
 dados/inventario.json
 uteis/rank.py
+main.sqlite
