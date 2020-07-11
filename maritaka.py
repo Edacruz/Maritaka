@@ -29,7 +29,7 @@ async def on_ready():
 
 
 @commands.check(is_owner)
-@client.command(name='habilitar', help='habilita ums cog', aliases=['e'], hidden=True)
+@client.command(name='habilitar', help='habilita uma cog', aliases=['e'], hidden=True)
 async def habilitar(ctx, extension):
     client.load_extension(f'cogs.{extension}')
     await ctx.send(f'{extension} foi habilitado!')
